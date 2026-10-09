@@ -1,131 +1,150 @@
-// src/components/Navbar.tsx
 import React, { useState } from 'react';
-import { Moon, Sun, Search, User, Shield } from 'lucide-react';
+import { User } from 'lucide-react';
 import { soundEngine } from '../utils/sound';
 import { LanguageMode } from '../types';
 import transparentLogo from '../assets/transparentlogo.png';
 import { getCopy } from '../i18n';
+import { AppLink } from '../routing/AppLink';
+import { APPLICATION_NAVIGATION, APP_PATHS, routeForRole } from '../routing/appRoutes';
+import { getCurrentUser } from '../services/authService';
 
 interface NavbarProps {
   lang: LanguageMode;
   setLang: (l: LanguageMode) => void;
-  activeSection: string;
+  currentPath: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ lang, setLang, activeSection }) => {
-  const [darkMode, setDarkMode] = useState(true);
+const routeIsActive = (currentPath: string, href: string) =>
+  currentPath === href
+  || (href === APP_PATHS.marketplace && currentPath.startsWith(`${APP_PATHS.propertyDetail}/`))
+  || (href === APP_PATHS.agents && currentPath.startsWith(`${APP_PATHS.agentDetail}/`));
 
-  const scrollTo = (id: string) => {
+export const Navbar: React.FC<NavbarProps> = ({ lang, setLang, currentPath }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const user = getCurrentUser();
+  const accountPath = user ? routeForRole(user.role) : APP_PATHS.login;
+
+  const onNavigation = () => {
     soundEngine.playClick();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    setMobileOpen(false);
   };
 
-  const navigateTo = (path: string) => {
-    soundEngine.playClick();
-    window.history.pushState({}, '', path);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
-  const navLinks = [
-    { id: 'home', label: getCopy(lang, 'home') }, { id: 'problems', label: getCopy(lang, 'problems') }, { id: 'property-graph', label: getCopy(lang, 'graph') }, { id: 'workforce', label: getCopy(lang, 'workforce') }, { id: 'property-discovery', label: getCopy(lang, 'properties') }, { id: 'coverage', label: getCopy(lang, 'coverage') }, { id: 'lead-lock', label: getCopy(lang, 'leadLock') }, { id: 'deal-lock', label: getCopy(lang, 'dealLock') }, { id: 'trust', label: getCopy(lang, 'trust') }, { id: 'digital-government', label: getCopy(lang, 'government') }, { id: 'revenue-engine', label: getCopy(lang, 'revenue') }, { id: 'expansion-roadmap', label: getCopy(lang, 'roadmap') }, { id: 'user-journey', label: getCopy(lang, 'journeys') }, { id: 'database-architecture', label: getCopy(lang, 'database') }, { id: 'security-architecture', label: 'Security' }, { id: 'ai-constitution', label: 'AI Constitution' }, { id: 'ecosystems', label: getCopy(lang, 'ecosystems') },
-  ];
+  const navigationItems = APPLICATION_NAVIGATION.map(({ path, label }) => (
+        <AppLink
+          key={path}
+          to={path}
+          onNavigate={onNavigation}
+          aria-current={routeIsActive(currentPath, path) ? 'page' : undefined}
+          className={`rounded-lg px-3 py-2 text-xs tracking-wide transition-colors ${
+            routeIsActive(currentPath, path)
+              ? 'border-b-2 border-[#E5B842] text-[#E5B842]'
+              : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+          }`}
+        >
+          {label}
+        </AppLink>
+      ));
+  const mobileAccountItems = (
+    <>
+      <AppLink
+        to={accountPath}
+        onNavigate={onNavigation}
+        className="rounded-lg px-3 py-2 text-xs text-neutral-300 transition-colors hover:bg-white/5 hover:text-white"
+      >
+        {user ? 'Profile / Dashboard' : 'Login'}
+      </AppLink>
+      {!user && (
+        <AppLink
+          to={APP_PATHS.register}
+          onNavigate={onNavigation}
+          className="rounded-lg px-3 py-2 text-xs text-[#E5B842] transition-colors hover:bg-white/5"
+        >
+          Register
+        </AppLink>
+      )}
+    </>);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-3 bg-[#06080D]/90 backdrop-blur-xl border-b border-white/5 transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand / Logo exactly matching Reference Image */}
-        <div 
-          onClick={() => scrollTo('home')} 
-          className="flex items-center gap-3 cursor-pointer group"
-        >
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[#06080D]/95 px-4 py-3 backdrop-blur-xl sm:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <AppLink to={APP_PATHS.home} onNavigate={onNavigation} aria-label="Nexus home" className="shrink-0">
           <img
             src={transparentLogo}
             alt="Nexus Property Network"
-            className="w-[110px] sm:w-[145px] h-auto object-contain group-hover:scale-[1.02] transition-transform"
+            className="w-[110px] object-contain transition-transform hover:scale-[1.02] sm:w-[145px]"
           />
-        </div>
+        </AppLink>
 
-        {/* Center Nav Links */}
-        <nav className="hidden lg:flex max-w-[52vw] items-center gap-1.5 overflow-x-auto no-scrollbar whitespace-nowrap text-[13px] font-medium text-neutral-300">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.id;
-            return (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
-                className={`px-3 py-1.5 rounded-lg transition-all text-xs tracking-wide cursor-pointer ${
-                  isActive
-                    ? 'text-[#E5B842] font-semibold border-b-2 border-[#E5B842] rounded-b-none'
-                    : 'text-neutral-300 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {link.label}
-              </button>
-            );
-          })}
+        <nav aria-label="Main navigation" className="hidden min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto whitespace-nowrap lg:flex">
+          {navigationItems}
         </nav>
 
-        {/* Right Tools (Language, Dark Mode Toggle, Login, Register) */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Language Switcher */}
-          <div className="hidden sm:flex glass-pill rounded-lg p-0.5 text-[11px] font-mono">
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="hidden rounded-lg p-0.5 font-mono text-[11px] sm:flex">
             <button
+              type="button"
               onClick={() => { soundEngine.playClick(); setLang('roman_ur'); }}
-              className={`px-2 py-0.5 rounded-md transition-all ${lang === 'roman_ur' ? 'bg-[#E5B842] text-black font-bold' : 'text-neutral-400 hover:text-white'}`}
+              className={`rounded-md px-2 py-1 ${lang === 'roman_ur' ? 'bg-[#E5B842] font-bold text-black' : 'text-neutral-400 hover:text-white'}`}
+              aria-label="Use Roman Urdu"
             >
               {getCopy(lang, 'roman')}
             </button>
             <button
+              type="button"
               onClick={() => { soundEngine.playClick(); setLang('en'); }}
-              className={`px-2 py-0.5 rounded-md transition-all ${lang === 'en' ? 'bg-[#E5B842] text-black font-bold' : 'text-neutral-400 hover:text-white'}`}
+              className={`rounded-md px-2 py-1 ${lang === 'en' ? 'bg-[#E5B842] font-bold text-black' : 'text-neutral-400 hover:text-white'}`}
+              aria-label="Use English"
             >
               EN
             </button>
             <button
+              type="button"
               onClick={() => { soundEngine.playClick(); setLang('ur'); }}
-              className={`px-2 py-0.5 rounded-md transition-all ${lang === 'ur' ? 'bg-[#E5B842] text-black font-bold' : 'text-neutral-400 hover:text-white'}`}
+              className={`rounded-md px-2 py-1 ${lang === 'ur' ? 'bg-[#E5B842] font-bold text-black' : 'text-neutral-400 hover:text-white'}`}
+              aria-label="Use Urdu"
             >
               اردو
             </button>
           </div>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={() => {
-              soundEngine.playClick();
-              setDarkMode(!darkMode);
-            }}
-            className="p-2 rounded-xl text-neutral-300 hover:text-[#E5B842] transition-colors cursor-pointer"
-            title="Toggle Mode"
+          <AppLink
+            to={accountPath}
+            onNavigate={onNavigation}
+            className="hidden items-center gap-1.5 rounded-xl border border-white/20 px-3 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:border-white hover:text-white sm:flex"
           >
-            {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-[#E5B842]" />}
-          </button>
-
-          {/* Login Button */}
+            <User className="h-3.5 w-3.5" />
+            {user ? 'Dashboard' : getCopy(lang, 'login')}
+          </AppLink>
+          {!user && (
+            <AppLink
+              to={APP_PATHS.register}
+              onNavigate={onNavigation}
+              className="hidden rounded-xl bg-gradient-to-r from-[#E5B842] to-[#CAA034] px-4 py-2 text-xs font-bold tracking-wide text-black shadow-lg shadow-[#E5B842]/20 transition hover:scale-105 sm:inline-flex"
+            >
+              {getCopy(lang, 'register')}
+            </AppLink>
+          )}
           <button
-            onClick={() => {
-              navigateTo('/auth/login');
-            }}
-            className="hidden sm:inline-block px-4 py-1.5 rounded-xl border border-white/20 text-neutral-200 text-xs font-semibold hover:border-white hover:text-white transition-all cursor-pointer"
+            type="button"
+            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg border border-white/15 text-white lg:hidden"
+            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-product-navigation"
+            onClick={() => setMobileOpen((isOpen) => !isOpen)}
           >
-            {getCopy(lang, 'login')}
-          </button>
-
-          {/* Register Button exactly matching Reference Image */}
-          <button
-            onClick={() => {
-              navigateTo('/auth/register');
-            }}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#E5B842] to-[#CAA034] hover:from-[#F5C852] hover:to-[#E5B842] text-black font-bold text-xs tracking-wider shadow-lg shadow-[#E5B842]/20 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
-          >
-            <User className="w-3.5 h-3.5 text-black" />
-            <span>{getCopy(lang, 'register')}</span>
+            <span className={`h-0.5 w-5 bg-current transition-transform ${mobileOpen ? 'translate-y-2 rotate-45' : ''}`} />
+            <span className={`h-0.5 w-5 bg-current transition-opacity ${mobileOpen ? 'opacity-0' : ''}`} />
+            <span className={`h-0.5 w-5 bg-current transition-transform ${mobileOpen ? '-translate-y-2 -rotate-45' : ''}`} />
           </button>
         </div>
       </div>
+
+      {mobileOpen && (
+        <nav id="mobile-product-navigation" aria-label="Mobile product navigation" className="mx-auto mt-3 grid max-w-7xl grid-cols-2 gap-2 border-t border-white/10 pt-3 sm:grid-cols-3 lg:hidden">
+          {navigationItems}
+          {mobileAccountItems}
+        </nav>
+      )}
     </header>
   );
 };

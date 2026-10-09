@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, FileText, ShieldCheck } from 'lucide-react';
 import transparentLogo from '../assets/transparentlogo.png';
+import { APP_PATHS, navigateApp } from '../routing/appRoutes';
 
 const documents = {
   '/privacy': {
@@ -25,8 +26,7 @@ type DocumentPath = keyof typeof documents;
 export const SiteDocumentPage: React.FC<{ path: DocumentPath }> = ({ path }) => {
   const document = documents[path];
   const goHome = () => {
-    window.history.pushState({}, '', '/');
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    navigateApp(APP_PATHS.home);
   };
 
   return (

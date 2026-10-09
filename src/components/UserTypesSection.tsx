@@ -1,8 +1,11 @@
 // src/components/UserTypesSection.tsx
 import React, { useState } from 'react';
-import { Users, User, Building2, Briefcase, Landmark, Shield, Factory, TrendingUp, CheckCircle, ArrowRight } from 'lucide-react';
+import { Users, User, Building2, Briefcase, Landmark, Shield, Factory, TrendingUp, CheckCircle } from 'lucide-react';
 import { USER_ECOSYSTEMS } from '../data/nexusData';
 import { soundEngine } from '../utils/sound';
+import { getCurrentUser } from '../services/authService';
+import { APP_PATHS, navigateApp, routeForRole } from '../routing/appRoutes';
+import type { PlatformRole } from '../services/platformStore';
 
 export const UserTypesSection: React.FC = () => {
   const [selectedUserIndex, setSelectedUserIndex] = useState<number>(2); // Default to "Agents"
@@ -21,6 +24,28 @@ export const UserTypesSection: React.FC = () => {
 
   const activeEcosystem = USER_ECOSYSTEMS[selectedUserIndex];
   const IconComponent = userRoleIcons[activeEcosystem.id] || Users;
+
+  const accessWorkspace = (ecosystemId: string) => {
+    soundEngine.playActivate();
+    const roleByEcosystem: Record<string, PlatformRole> = {
+      buyers: 'Buyer',
+      sellers: 'Seller',
+      agents: 'Agent',
+      agencies: 'Agency',
+      developers: 'Developer',
+      investors: 'Investor',
+      industrial: 'Industrial',
+      corporate: 'Corporate',
+      government: 'Government',
+    };
+    const role = roleByEcosystem[ecosystemId];
+    if (!role) return;
+
+    const destination = getCurrentUser()
+      ? routeForRole(role)
+      : APP_PATHS.login;
+    navigateApp(destination);
+  };
 
   return (
     <section id="ecosystems" className="relative py-28 bg-[#070707] border-t border-white/10 overflow-hidden">
@@ -94,7 +119,7 @@ export const UserTypesSection: React.FC = () => {
             {/* Persona Feature Capabilities */}
             <div className="space-y-2.5 pt-2">
               <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider mb-2">
-                Ecosystem Operational Capabilities:
+                Ecosystem Capabilities:
               </div>
               {activeEcosystem.features.map((feat, fIdx) => (
                 <div key={fIdx} className="flex items-center gap-3 text-xs sm:text-sm text-neutral-200">
@@ -104,12 +129,12 @@ export const UserTypesSection: React.FC = () => {
               ))}
             </div>
 
-            {/* Performance Stats */}
+            {/* Persona-specific capability and status indicators */}
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10 max-w-md">
               {activeEcosystem.metrics.map((metric, mIdx) => (
                 <div key={mIdx} className="p-3.5 rounded-xl bg-black/60 border border-white/5">
                   <div className="text-[10px] font-mono text-neutral-400 uppercase">{metric.label}</div>
-                  <div className="text-xl font-bold text-white mt-0.5">Operational</div>
+                  <div className="text-xl font-bold text-white mt-0.5">{metric.value}</div>
                 </div>
               ))}
             </div>
@@ -136,7 +161,7 @@ export const UserTypesSection: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between">
                 <span className="text-neutral-400">REGIONAL NETWORK:</span>
-                <span className="text-[#D4AF37]">130+ Cities Enabled</span>
+                <span className="text-[#D4AF37]">Sample locations; coverage not established</span>
               </div>
             </div>
 
@@ -146,10 +171,7 @@ export const UserTypesSection: React.FC = () => {
             </div>
 
             <button
-              onClick={() => {
-                soundEngine.playActivate();
-                alert(`Initializing dedicated workspace for ${activeEcosystem.title}. Connecting to Nexus OS network...`);
-              }}
+              onClick={() => accessWorkspace(activeEcosystem.id)}
               className="w-full py-3 rounded-xl bg-[#D4AF37] hover:bg-[#F3CF57] text-black font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg"
             >
               Access {activeEcosystem.title} Workspace

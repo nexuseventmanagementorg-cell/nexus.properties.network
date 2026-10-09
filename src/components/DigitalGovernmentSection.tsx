@@ -25,11 +25,11 @@ const lifecycle = [
   'Verified',
   'Listed',
   'Lead Generated',
-  'Lead Locked',
+  'Lead Lock policy state (proposed)',
   'Deal Started',
-  'Deal Locked',
-  'Transfer Complete',
-  'Archived Forever',
+  'Deal Lock policy state (proposed)',
+  'Transfer review (DECISION REQUIRED)',
+  'Archive under approved retention policy',
 ];
 
 const passports = [
@@ -49,7 +49,7 @@ const auditRows = [
 
 const rules = [
   'No fake listings, agents, documents, deals, or statistics',
-  'No hidden commissions or hidden ownership changes',
+  'No commission or ownership changes without approved policy and an auditable record',
   'Every action leaves an auditable record',
   'AI cannot override human governance',
 ];
@@ -71,13 +71,13 @@ export const DigitalGovernmentSection: React.FC = () => {
         <div className="mb-14 max-w-4xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 px-3.5 py-1.5 text-xs font-mono tracking-widest text-[#D4AF37] glass-panel">
             <Landmark className="h-3.5 w-3.5" />
-            <span>SECTION 10 // NEXUS DIGITAL GOVERNMENT</span>
+            <span>SECTION 10 // DIGITAL GOVERNMENT BLUEPRINT</span>
           </div>
           <h2 className="mb-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
             Pakistan&apos;s Property Network of Trust.
           </h2>
           <p className="max-w-3xl text-base font-light leading-relaxed text-neutral-300 sm:text-lg">
-            A governed operating layer for identity, verification, ownership history, property lifecycle, and accountable human review across 130+ cities and 5,000+ areas.
+            A proposed operating layer for identity, verification, ownership history, property lifecycle, and accountable human review. This section is not a live government integration or verified national ledger.
           </p>
         </div>
 
@@ -219,7 +219,7 @@ export const DigitalGovernmentSection: React.FC = () => {
                 {['Users', 'Leads', 'Deals', 'Payments', 'Fraud alerts', 'Verification queue', 'Dispute queue', 'AI health'].map((item) => (
                   <div key={item} className="rounded-xl border border-white/5 bg-black/50 p-3">
                     <div className="text-[10px] font-mono uppercase text-neutral-500">{item}</div>
-                    <div className="mt-2 text-xs font-bold text-emerald-300">Monitoring active</div>
+                    <div className="mt-2 text-xs font-bold text-amber-300">Blueprint only — not connected</div>
                   </div>
                 ))}
               </div>

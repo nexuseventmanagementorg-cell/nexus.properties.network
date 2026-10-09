@@ -6,13 +6,13 @@ import { soundEngine } from '../utils/sound';
 
 export const LeadLockSection: React.FC = () => {
   const [activeStageIndex, setActiveStageIndex] = useState<number>(4); // Default to "Lead Lock Activated"
-  const [simulatedLeadState, setSimulatedLeadState] = useState<'IDLE' | 'LOCKED' | 'POACH_ATTEMPT_BLOCKED'>('LOCKED');
+  const [simulatedLeadState, setSimulatedLeadState] = useState<'DEMO_LOCKED' | 'SIMULATED_CONFLICT'>('DEMO_LOCKED');
 
   const triggerPoachSimulation = () => {
     soundEngine.playLock();
-    setSimulatedLeadState('POACH_ATTEMPT_BLOCKED');
+    setSimulatedLeadState('SIMULATED_CONFLICT');
     setTimeout(() => {
-      setSimulatedLeadState('LOCKED');
+      setSimulatedLeadState('DEMO_LOCKED');
     }, 4000);
   };
 
@@ -30,20 +30,19 @@ export const LeadLockSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6">
-            Zero Lead Theft. Guaranteed Exclusivity.
+            Lead Lock Policy Blueprint
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            In Pakistan's conventional market, leads are poached within minutes. 
-            <span className="text-emerald-400 font-semibold"> Lead Lock™</span> is our cryptographic exclusivity vault 
-            that ties a client inquiry to a certified broker with millisecond timestamps, making lead theft mathematically impossible.
+            <span className="text-emerald-400 font-semibold">Canonical duration: 48 hours.</span>
+            {' '}This section is a UI simulation, not production lock enforcement. Eligibility details, fees, payment prerequisite, release authority, and extension policy remain DECISION REQUIRED.
           </p>
         </div>
 
         {/* 8-Stage Operating System Lifecycle Timeline */}
         <div className="mb-14">
           <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider mb-6 flex items-center justify-between">
-            <span>THE 8-STAGE LEAD LOCK™ ARCHITECTURE:</span>
+            <span>PROPOSED LEAD LOCK WORKFLOW — NOT PRODUCTION ENFORCEMENT:</span>
             <span className="text-[#2DD4BF] font-mono">CLICK ANY STAGE TO INSPECT PROTOCOL</span>
           </div>
 
@@ -97,7 +96,7 @@ export const LeadLockSection: React.FC = () => {
                 </h3>
               </div>
               <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-mono text-xs font-bold">
-                ENFORCED BY AI ADMIN
+                BLUEPRINT ONLY
               </span>
             </div>
 
@@ -107,19 +106,19 @@ export const LeadLockSection: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-black/60 border border-white/10 space-y-3">
               <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
-                Cryptographic Security Invariants:
+                Policy and implementation status:
               </div>
               <div className="flex items-center gap-2 text-xs text-neutral-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>SHA-256 Hashing of Buyer CNIC and Phone Number in Zero-Knowledge Vault</span>
+                <span>Property remains visible during an active lock; display the LEAD LOCK ACTIVE state.</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-neutral-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Automated SLA clock: Agent must log verified touchpoint within 4 hours</span>
+                <span>Server-side lock acquisition and expiry are future work; no lock service is implemented.</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-neutral-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Multi-broker collision checks: Second broker attempt returns instant lockout</span>
+                <span>Eligibility/activity requirements, extensions, fees, and release rules are DECISION REQUIRED.</span>
               </div>
             </div>
           </div>
@@ -128,47 +127,46 @@ export const LeadLockSection: React.FC = () => {
           <div className="lg:col-span-5 glass-card-luxury p-6 sm:p-8 rounded-3xl border-[#D4AF37]/30 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
-                <span className="text-xs font-mono text-[#D4AF37] font-bold">LIVE ANTI-POACH RADAR</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-xs font-mono text-[#D4AF37] font-bold">DEMO SIMULATION — NOT LIVE</span>
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
               </div>
 
               <div className="p-4 rounded-2xl bg-black/70 border border-white/10 mb-6 space-y-3">
                 <div className="flex justify-between text-xs font-mono">
                   <span className="text-neutral-400">LEAD ID:</span>
-                  <span className="text-white font-bold">Protected record</span>
+                  <span className="text-white font-bold">SAMPLE record</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono">
                   <span className="text-neutral-400">ASSIGNED BROKER:</span>
-                  <span className="text-[#2DD4BF] font-semibold">Taimur Malik (Elite Partner)</span>
+                  <span className="text-[#2DD4BF] font-semibold">Demo agent</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono">
                   <span className="text-neutral-400">LOCK STATUS:</span>
                   <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <Lock className="w-3 h-3" /> EXCLUSIVE LOCK
+                    <Lock className="w-3 h-3" /> SIMULATED LOCK
                   </span>
                 </div>
               </div>
 
               {/* Poach Simulation Box */}
-              {simulatedLeadState === 'POACH_ATTEMPT_BLOCKED' ? (
+              {simulatedLeadState === 'SIMULATED_CONFLICT' ? (
                 <div className="p-4 rounded-2xl bg-red-950/40 border border-red-500 text-red-300 text-xs font-mono space-y-2 animate-pulse">
                   <div className="flex items-center gap-2 font-bold text-red-400">
                     <ShieldAlert className="w-4 h-4" />
-                    <span>ILLEGAL POACH ATTEMPT DETECTED & BLOCKED</span>
+                    <span>SIMULATED CONFLICT — NO LIVE ENFORCEMENT</span>
                   </div>
                   <p className="text-[11px] text-neutral-300">
-                    Broker "Apex Capital" tried to claim Client Hash 0x9E4B... System denied authorization. 
-                    Original Broker Taimur Malik remains exclusive owner.
+                    This button changes demo UI state only. No real broker attempt, client hash, access control, or lock service is connected.
                   </p>
                 </div>
               ) : (
                 <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 text-emerald-300 text-xs font-mono space-y-1">
                   <div className="font-bold flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span>LEAD VAULT IS ENCRYPTED & IMMUTABLE</span>
+                    <span>DEMO STATE ONLY — NO PRODUCTION LOCK</span>
                   </div>
                   <p className="text-[11px] text-neutral-400">
-                    No competing broker can access or claim this contact.
+                    Production access controls and immutable history are future work.
                   </p>
                 </div>
               )}
@@ -178,7 +176,7 @@ export const LeadLockSection: React.FC = () => {
               onClick={triggerPoachSimulation}
               className="mt-6 w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600/30 to-amber-600/30 hover:from-red-600/50 hover:to-amber-600/50 border border-red-500/40 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg"
             >
-              Simulate Competitor Poach Attack
+              Run Demo Conflict Simulation
             </button>
           </div>
         </div>

@@ -30,12 +30,11 @@ export const PropertyGraphSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6">
-            The Sovereign National Property Graph.
+            Proposed Property Data Model.
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            Every province, city, area, society, and plot connected in an interactive multi-dimensional topology. 
-            130+ cities and 5,000+ mapped areas synchronized under a unified national parcel identifier.
+            This interactive prototype demonstrates a possible location hierarchy using sample data. National coverage, cadastral mapping, and synchronized parcel identifiers are not established.
           </p>
         </div>
 

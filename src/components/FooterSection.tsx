@@ -1,8 +1,10 @@
 // src/components/FooterSection.tsx
 import React from 'react';
-import { Shield, ArrowRight, Globe, Lock, Cpu, CheckCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { soundEngine } from '../utils/sound';
 import transparentLogo from '../assets/transparentlogo.png';
+import { AppLink } from '../routing/AppLink';
+import { APP_PATHS } from '../routing/appRoutes';
 
 export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinNetwork }) => {
   return (
@@ -39,12 +41,12 @@ export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinN
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <a
-                href="#property-discovery"
+              <AppLink
+                to={APP_PATHS.marketplace}
                 className="px-8 py-4 rounded-xl glass-panel text-white font-semibold text-sm hover:border-[#2DD4BF] transition-all"
               >
-                Explore Verified Inventory
-              </a>
+                Explore Property Samples
+              </AppLink>
             </div>
           </div>
         </div>
@@ -58,11 +60,10 @@ export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinN
               className="w-[210px] h-auto object-contain mb-4"
             />
             <p className="text-neutral-400 leading-relaxed font-light mb-4">
-              Pakistan's first sovereign AI-powered real estate operating system. 
-              Connecting 130+ cities, 5,000+ areas, and specialized AI employees.
+              Nexus Property Network is a frontend prototype with sample data and a 54-entry AI Workforce Registry. Production coverage and integrations are not established.
             </p>
             <div className="text-[10px] font-mono text-neutral-500">
-              ARCHITECTURE: PRODUCTION
+              STATUS: FRONTEND PROTOTYPE
             </div>
           </div>
 
@@ -71,24 +72,27 @@ export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinN
               Core Pillars
             </div>
             <ul className="space-y-2.5 text-neutral-400 font-light">
-              <li className="hover:text-white transition-colors cursor-pointer">• Pakistan Property Graph</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Lead Lock™ Exclusivity Vault</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Deal Lock™ Escrow Engine</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• 8-Layer Trust Infrastructure</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Autonomous AI Workforce</li>
+              <li><AppLink to={APP_PATHS.marketplace} className="transition-colors hover:text-white">Marketplace</AppLink></li>
+              <li><AppLink to={APP_PATHS.listProperty} className="transition-colors hover:text-white">List property</AppLink></li>
+              <li><AppLink to={APP_PATHS.agents} className="transition-colors hover:text-white">Find an agent</AppLink></li>
+              <li><AppLink to={APP_PATHS.leadProtection} className="transition-colors hover:text-white">Lead Lock policy blueprint</AppLink></li>
+              <li><AppLink to={APP_PATHS.pricing} className="transition-colors hover:text-white">Pricing</AppLink></li>
+              <li><AppLink to={APP_PATHS.ai} className="transition-colors hover:text-white">AI assistant preview</AppLink></li>
+              <li><AppLink to={APP_PATHS.contact} className="transition-colors hover:text-white">Contact</AppLink></li>
             </ul>
           </div>
 
           <div>
             <div className="font-bold text-sm text-white uppercase tracking-wider mb-4 font-mono">
-              Ecosystem Hubs
+              Account & policies
             </div>
             <ul className="space-y-2.5 text-neutral-400 font-light">
-              <li className="hover:text-white transition-colors cursor-pointer">• Islamabad Capital Node</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Lahore Metropolitan Cadastre</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Karachi Coastal & Commercial</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• Gwadar SEZ Logistics Port</li>
-              <li className="hover:text-white transition-colors cursor-pointer">• CPEC Intermodal Corridors</li>
+              <li><AppLink to={APP_PATHS.login} className="transition-colors hover:text-white">Login</AppLink></li>
+              <li><AppLink to={APP_PATHS.register} className="transition-colors hover:text-white">Register</AppLink></li>
+              <li><AppLink to={APP_PATHS.coverage} className="transition-colors hover:text-white">Coverage areas</AppLink></li>
+              <li><AppLink to={APP_PATHS.dealLock} className="transition-colors hover:text-white">Deal Lock policy blueprint</AppLink></li>
+              <li><AppLink to={APP_PATHS.privacy} className="transition-colors hover:text-white">Privacy protocol</AppLink></li>
+              <li><AppLink to={APP_PATHS.terms} className="transition-colors hover:text-white">Terms of operation</AppLink></li>
             </ul>
           </div>
 
@@ -101,7 +105,7 @@ export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinN
               <li>• NADRA Biometric Zero-Knowledge Gateway</li>
               <li>• FBR Section 7E Tax Valuation Alignment</li>
               <li>• Civic Masterplan NOC Synchronization</li>
-              <li>• Licensed Partner Banking Escrow Protocol</li>
+              <li>• Payment / escrow provider: not connected</li>
             </ul>
           </div>
         </div>
@@ -112,9 +116,9 @@ export const FooterSection: React.FC<{ onJoinNetwork: () => void }> = ({ onJoinN
             © 2026 NEXUS PROPERTY NETWORK™ // POWERED BY NEXUS OS™. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-6">
-            <a href="/privacy" className="hover:text-neutral-300 transition-colors">PRIVACY PROTOCOL</a>
-            <a href="/terms" className="hover:text-neutral-300 transition-colors">TERMS OF OPERATION</a>
-            <a href="/api-docs" className="hover:text-neutral-300 transition-colors">API DOCUMENTATION</a>
+            <AppLink to={APP_PATHS.privacy} className="hover:text-neutral-300 transition-colors">PRIVACY PROTOCOL</AppLink>
+            <AppLink to={APP_PATHS.terms} className="hover:text-neutral-300 transition-colors">TERMS OF OPERATION</AppLink>
+            <AppLink to={APP_PATHS.apiDocs} className="hover:text-neutral-300 transition-colors">API DOCUMENTATION</AppLink>
           </div>
         </div>
       </div>

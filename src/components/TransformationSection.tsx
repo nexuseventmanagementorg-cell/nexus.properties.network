@@ -13,34 +13,34 @@ export const TransformationSection: React.FC = () => {
 
   const transformationSteps = [
     {
-      title: 'Properties Connect',
-      desc: 'Parcels synchronized across Pakistan into unified cadastral coordinates.',
+      title: 'Property Data Integration',
+      desc: 'Future connection to approved property and location sources; live national registry integrations are not established.',
       icon: RefreshCw,
-      stat: '130+ Cities Connected'
+      stat: 'Integration: not established'
     },
     {
-      title: 'Users Connect',
-      desc: 'Biometric identity layers bind genuine buyers, sellers, and certified agents.',
+      title: 'Identity Verification',
+      desc: 'Verification workflows require approved providers, policy, and implementation.',
       icon: CheckCircle2,
-      stat: 'Verified Identities'
+      stat: 'Production verification: not established'
     },
     {
-      title: 'AI Employees Activate',
-      desc: 'Specialized AI agents launch supervisory surveillance across all transactions.',
+      title: 'AI Workforce Registry',
+      desc: 'The registry defines 54 intended assistant roles; it does not represent deployed agents or transaction monitoring.',
       icon: Cpu,
-      stat: 'Autonomous Agents'
+      stat: '54 design entries'
     },
     {
-      title: 'Governance Activates',
-      desc: 'Automated FBR tax computation, civic NOC validation, and stay-order court checks.',
+      title: 'Governance Integrations',
+      desc: 'Government, legal, tax, and verification integrations require authorization and implementation.',
       icon: Zap,
-      stat: 'Legal Clearance Active'
+      stat: 'Not connected'
     },
     {
-      title: 'Trust Activates',
-      desc: 'Lead Lock™ and Deal Lock™ seal the transaction pipeline with zero ambiguity.',
+      title: 'Trust Workflows',
+      desc: 'Lead and Deal Lock policies are documented; production enforcement, escrow, and dispute outcomes are not established.',
       icon: Shield,
-      stat: 'Zero-Dispute Guarantee'
+      stat: 'No zero-dispute guarantee'
     }
   ];
 
@@ -56,22 +56,21 @@ export const TransformationSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-[#2DD4BF]/40 text-xs font-mono tracking-widest text-[#2DD4BF] mb-4">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>SECTION 02 // INTRODUCING NEXUS OS™</span>
+            <span>            SECTION 02 // NEXUS TARGET ARCHITECTURE</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6">
-            Chaos Transforms Into Order.
+            A Roadmap From Prototype to Target Architecture.
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            Nexus OS reorganizes the entire national real estate landscape. Through algorithmic governance, 
-            immutable property graphs, and autonomous AI squads, chaos gives way to mathematical certainty.
+            This interactive section illustrates a product vision, not a live nationwide deployment. Property, verification, lock, payment, and AI integrations remain subject to approved policy and implementation.
           </p>
 
           {/* Interactive State Toggle */}
           <div className="mt-8 inline-flex items-center gap-4 p-2 rounded-2xl glass-panel border border-white/10 shadow-2xl">
             <span className={`text-xs font-mono tracking-wider ${!isActivated ? 'text-red-400 font-bold' : 'text-neutral-500'}`}>
-              PRE-NEXUS CHAOS
+              CURRENT IMPLEMENTATION
             </span>
             <button
               onClick={toggleActivation}
@@ -88,7 +87,7 @@ export const TransformationSection: React.FC = () => {
               </div>
             </button>
             <span className={`text-xs font-mono tracking-wider ${isActivated ? 'text-[#D4AF37] font-bold' : 'text-neutral-500'}`}>
-              NEXUS OS™ ACTIVE
+              TARGET BLUEPRINT
             </span>
           </div>
         </div>
@@ -103,25 +102,25 @@ export const TransformationSection: React.FC = () => {
           }`}>
             <div className="flex items-center justify-between mb-6">
               <span className="text-xs font-mono text-red-400 tracking-wider font-semibold">
-                LEGACY PAKISTAN MARKET
+                CURRENT IMPLEMENTATION BOUNDARIES
               </span>
               <span className="px-2.5 py-1 rounded bg-red-500/10 text-red-400 text-[10px] font-mono">
-                DISORGANIZED ENTROPY
+                LIVE INTEGRATIONS NOT ESTABLISHED
               </span>
             </div>
 
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-black/60 border border-red-500/20 text-neutral-300 text-sm">
-                <span className="text-red-400 font-semibold block mb-1">✕ Fragmented Offline Ledgers</span>
-                Every patwari and society maintains isolated, paper records prone to manual alteration.
+                <span className="text-red-400 font-semibold block mb-1">Property Data</span>
+                The project does not establish a synchronized national property or cadastral registry.
               </div>
               <div className="p-4 rounded-xl bg-black/60 border border-red-500/20 text-neutral-300 text-sm">
-                <span className="text-red-400 font-semibold block mb-1">✕ Rampant Client Poaching</span>
-                Client phone numbers leaked to dozens of brokers, resulting in aggressive harassment.
+                <span className="text-red-400 font-semibold block mb-1">Lead Protection</span>
+                Lead Lock rules are documented, but production lock enforcement is not implemented.
               </div>
               <div className="p-4 rounded-xl bg-black/60 border border-red-500/20 text-neutral-300 text-sm">
-                <span className="text-red-400 font-semibold block mb-1">✕ High-Risk Cash Tokens</span>
-                Transactions handled via unverified cheques and informal promises without legal escrow.
+                <span className="text-red-400 font-semibold block mb-1">Payments and Escrow</span>
+                No production payment-provider or escrow integration is established.
               </div>
             </div>
           </div>
@@ -134,25 +133,25 @@ export const TransformationSection: React.FC = () => {
           }`}>
             <div className="flex items-center justify-between mb-6">
               <span className="text-xs font-mono text-[#D4AF37] tracking-wider font-semibold">
-                NEXUS OS™ SOVEREIGN ARCHITECTURE
+                NEXUS TARGET ARCHITECTURE (NOT LIVE)
               </span>
               <span className="px-2.5 py-1 rounded bg-[#2DD4BF]/20 text-[#2DD4BF] text-[10px] font-mono font-bold animate-pulse">
-                MATHEMATICAL CONSENSUS
+                DESIGN BLUEPRINT
               </span>
             </div>
 
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-black/70 border border-[#D4AF37]/30 text-neutral-200 text-sm">
-                <span className="text-[#D4AF37] font-semibold block mb-1">✓ Pakistan Property Graph</span>
-                130+ cities organized into standardized digital parcel schemas with GPS coordinates.
+                <span className="text-[#D4AF37] font-semibold block mb-1">Property and Location Catalog</span>
+                Sample catalog data only; nationwide property or cadastral integrations are not established.
               </div>
               <div className="p-4 rounded-xl bg-black/70 border border-[#2DD4BF]/30 text-neutral-200 text-sm">
-                <span className="text-[#2DD4BF] font-semibold block mb-1">✓ Lead Lock™ Cryptographic Enclave</span>
-                Client inquiries locked with cryptographic exclusivity, guaranteeing zero poaching.
+                <span className="text-[#2DD4BF] font-semibold block mb-1">Lead Lock Policy</span>
+                The documented duration is 48 hours; production enforcement and cryptographic exclusivity are not implemented.
               </div>
               <div className="p-4 rounded-xl bg-black/70 border border-[#D4AF37]/30 text-neutral-200 text-sm">
-                <span className="text-[#D4AF37] font-semibold block mb-1">✓ Deal Lock™ Digital Escrow</span>
-                Milestone payments, digital documents, and statutory commissions settled automatically.
+                <span className="text-[#D4AF37] font-semibold block mb-1">Deal Lock Policy</span>
+                The documented period starts at 7 days and caps at 15 days total; escrow and automatic settlement are not implemented.
               </div>
             </div>
           </div>
@@ -161,7 +160,7 @@ export const TransformationSection: React.FC = () => {
         {/* 5-Step Activation Sequence Flow */}
         <div className="pt-8 border-t border-white/10">
           <div className="text-xs font-mono text-neutral-400 tracking-wider uppercase text-center mb-8">
-            NEXUS OS™ SYSTEM INITIALIZATION SEQUENCE
+            PROPOSED IMPLEMENTATION SEQUENCE
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

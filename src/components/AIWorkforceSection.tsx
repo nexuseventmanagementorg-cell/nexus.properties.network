@@ -46,17 +46,16 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6">
-            An Autonomous Digital Company.
+            The AI Workforce Registry.
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            NEXUS OS™ is powered by specialized AI Employees working continuously in consensus.
-            At the center stands <span className="text-[#D4AF37] font-semibold">AI Admin</span>, the supervisory intelligence 
-            orchestrating listings, leads, deals, payments, verification, fraud detection, and trust.
+            This is a design roster of 54 assistant entries, not evidence of 54 deployed or model-backed production agents.
+            Status, task, and accuracy values are not production telemetry. Runtime integrations and authority remain subject to implementation and approved policy.
           </p>
         </div>
 
-        {/* Central AI Admin Supervisory Command Dashboard */}
+        {/* Proposed AI Admin scope; this registry does not expose production monitoring. */}
         <div className="mb-14 glass-card-luxury p-6 sm:p-8 rounded-3xl border-[#D4AF37]/40 relative overflow-hidden ring-1 ring-[#D4AF37]/20 shadow-2xl">
           {/* Subtle Ambient Radar Lines */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
@@ -76,11 +75,11 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-white tracking-wide">AI ADMIN SUPERVISORY CORE</h3>
-              <p className="text-xs text-[#D4AF37] font-mono mt-0.5">SUPREME OPERATING SYSTEM INTELLIGENCE</p>
+              <h3 className="text-xl font-bold text-white tracking-wide">PROPOSED AI ADMIN ROLE</h3>
+              <p className="text-xs text-[#D4AF37] font-mono mt-0.5">DESIGN-ONLY WORKFORCE REGISTRY</p>
               
               <div className="mt-4 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-neutral-400">
-                Supervising 53 Autonomous Agents
+                53 specialist role definitions
               </div>
 
               <button
@@ -90,30 +89,30 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
                 }}
                 className="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:from-[#F3CF57] hover:to-[#D4AF37] text-black font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#D4AF37]/20"
               >
-                Launch AI Admin Console
+                Preview proposed role
               </button>
             </div>
 
             {/* AI Admin 7-Pillar Monitoring Scope */}
             <div className="lg:col-span-8">
               <div className="text-xs font-mono text-neutral-400 tracking-wider uppercase mb-4 flex items-center justify-between">
-                <span>AI ADMIN CONTINUOUS SURVEILLANCE RADAR:</span>
-                <span className="text-emerald-400 flex items-center gap-1.5 font-bold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  REAL-TIME CONSENSUS
+                <span>PROPOSED AI ADMIN SCOPE (NOT CONNECTED):</span>
+                <span className="text-amber-300 flex items-center gap-1.5 font-bold">
+                  <span className="w-2 h-2 rounded-full bg-amber-300" />
+                  DESIGN ONLY
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {[
-                  { label: 'Listings', status: 'Live Audit Stream', color: '#2DD4BF', sub: 'Ghost Inventory Detection' },
-                  { label: 'Leads', status: 'Locking Active', color: '#D4AF37', sub: 'Poach Protection' },
-                  { label: 'Deals', status: 'Supervision Active', color: '#2DD4BF', sub: 'Milestone Execution' },
-                  { label: 'Payments', status: 'Escrow Controls Active', color: '#D4AF37', sub: 'Dispute Prevention' },
-                  { label: 'Verification', status: 'Cadastral + Nadra', color: '#2DD4BF', sub: 'Biometric Gate' },
-                  { label: 'Fraud Radar', status: 'Threat Detection Active', color: '#EF4444', sub: 'Zero-Tolerance Sentry' },
-                  { label: 'Trust Index', status: 'Consensus Active', color: '#D4AF37', sub: 'Consensus Ledger' },
-                  { label: 'Latency', status: 'Responsive', color: '#2DD4BF', sub: 'Low-Latency Neural' },
+                  { label: 'Listings', status: 'Proposed review', color: '#D4AF37', sub: 'No live audit stream' },
+                  { label: 'Leads', status: 'Proposed review', color: '#D4AF37', sub: 'Lock enforcement not connected' },
+                  { label: 'Deals', status: 'Proposed review', color: '#D4AF37', sub: 'No milestone execution' },
+                  { label: 'Payments', status: 'Proposed review', color: '#D4AF37', sub: 'No escrow integration' },
+                  { label: 'Verification', status: 'Proposed review', color: '#D4AF37', sub: 'No external verification gate' },
+                  { label: 'Fraud Radar', status: 'Proposed review', color: '#D4AF37', sub: 'No live threat detection' },
+                  { label: 'Trust Index', status: 'Proposed review', color: '#D4AF37', sub: 'No live scoring' },
+                  { label: 'Latency', status: 'Not measured', color: '#D4AF37', sub: 'No production telemetry' },
                 ].map((pillar, pIdx) => (
                   <div key={pIdx} className="p-3.5 rounded-xl bg-black/50 border border-white/10 hover:border-white/20 transition-all">
                     <div className="text-[10px] font-mono text-neutral-400 uppercase">{pillar.label}</div>
@@ -187,7 +186,7 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span className="w-2 h-2 rounded-full bg-amber-300" />
                       <span className="text-[10px] font-mono text-[#D4AF37] font-semibold">{emp.id.toUpperCase()}</span>
                     </div>
                     <span className="text-[10px] font-mono text-neutral-500">{emp.department}</span>
@@ -202,8 +201,8 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
                   </div>
 
                   <div className="mt-3 flex items-center justify-between text-[11px] font-mono pt-2 border-t border-white/5 text-neutral-400">
-                    <span>Live activity monitored</span>
-                    <span className="text-emerald-400 font-bold">Operational</span>
+                    <span>Registry entry</span>
+                    <span className="text-amber-300 font-bold">Design only</span>
                   </div>
                 </div>
               );
@@ -214,10 +213,10 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
           <div className="lg:col-span-4 glass-card-luxury p-6 rounded-2xl border-white/10 sticky top-28">
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <span className="text-xs font-mono text-[#D4AF37] font-bold">
-                AGENT DOSSIER // {activeEmployee.id.toUpperCase()}
+                REGISTRY ENTRY // {activeEmployee.id.toUpperCase()}
               </span>
               <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px] font-bold">
-                ACTIVE DEPLOYMENT
+                NOT DEPLOYED
               </span>
             </div>
 
@@ -241,12 +240,12 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
                   <span className="text-xs font-mono text-white font-semibold">{activeEmployee.specialization}</span>
                 </div>
                 <div className="pt-2 border-t border-white/5 flex justify-between">
-                  <span className="text-[10px] font-mono text-neutral-400">PERFORMANCE STATUS:</span>
-                  <span className="text-xs font-mono text-emerald-400 font-bold">Operational</span>
+                  <span className="text-[10px] font-mono text-neutral-400">IMPLEMENTATION STATUS:</span>
+                  <span className="text-xs font-mono text-amber-300 font-bold">Roster entry only</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[10px] font-mono text-neutral-400">HISTORICAL TASKS:</span>
-                  <span className="text-xs font-mono text-[#D4AF37] font-bold">Live activity monitored</span>
+                  <span className="text-[10px] font-mono text-neutral-400">PRODUCTION TELEMETRY:</span>
+                  <span className="text-xs font-mono text-[#D4AF37] font-bold">Not available</span>
                 </div>
               </div>
             </div>
@@ -260,7 +259,7 @@ export const AIWorkforceSection: React.FC<AIWorkforceSectionProps> = ({ onSelect
               className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2DD4BF] to-[#0D9488] hover:from-[#5EEAD4] hover:to-[#2DD4BF] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#2DD4BF]/20"
             >
               <Bot className="w-4 h-4" />
-              <span>Consult {activeEmployee.name}</span>
+              <span>Preview {activeEmployee.name}</span>
             </button>
           </div>
         </div>

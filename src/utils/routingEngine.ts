@@ -33,7 +33,16 @@ export function routeMessage(message: string): RoutingDecision {
     };
   }
 
-  if (/fake document|fake identity|commission dispute|lead theft|payment fraud|ownership conflict|duplicate list|duplicate listing/.test(query)) {
+  if (/lead\s*lock|lead theft|lead poach|client poach/.test(query)) {
+    return {
+      level: 'SPECIALIST',
+      specialists: [findName('Lead Lock Guardian AI')],
+      reason: 'Lead Lock protection request detected.',
+      responsePolicy: 'Explain lead ownership, lock state, expiry, and escalation without changing unrelated property context.'
+    };
+  }
+
+  if (/fake document|fake identity|commission dispute|payment fraud|ownership conflict|duplicate list|duplicate listing/.test(query)) {
     return {
       level: 'AI_ADMIN',
       specialists: [findName('AI Admin Supervisory Core')],

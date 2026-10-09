@@ -21,29 +21,117 @@ import { DatabaseArchitectureSection } from './components/DatabaseArchitectureSe
 import { ApiArchitectureSection } from './components/ApiArchitectureSection';
 import { SecurityArchitectureSection } from './components/SecurityArchitectureSection';
 import { AIWorkforceConstitutionSection } from './components/AIWorkforceConstitutionSection';
+import { EnterpriseArchitectureSection } from './components/EnterpriseArchitectureSection';
+import { Section19UserRoleConstitutionSection } from './components/Section19UserRoleConstitutionSection';
+import { Section20DashboardOperatingSystemSection } from './components/Section20DashboardOperatingSystemSection';
+import { Section21PropertyVerificationOperatingSystemSection } from './components/Section21PropertyVerificationOperatingSystemSection';
+import { Section22LeadLifecycleOperatingSystemSection } from './components/Section22LeadLifecycleOperatingSystemSection';
+import { Section23DealLifecycleOperatingSystemSection } from './components/Section23DealLifecycleOperatingSystemSection';
+import { Section24PaymentSubscriptionOperatingSystemSection } from './components/Section24PaymentSubscriptionOperatingSystemSection';
+import { Section25AIAdminCommandCenterSection } from './components/Section25AIAdminCommandCenterSection';
+import { Section26SuperAdminCommandCenterSection } from './components/Section26SuperAdminCommandCenterSection';
+import { Section27WhatsAppFacebookAutomationOSSection } from './components/Section27WhatsAppFacebookAutomationOSSection';
+import { Section28CRMFollowUpOperatingSystemSection } from './components/Section28CRMFollowUpOperatingSystemSection';
+import { Section29NationalPropertyMarketplaceArchitectureSection } from './components/Section29NationalPropertyMarketplaceArchitectureSection';
+import { Section30NexusOSMasterArchitectureSection } from './components/Section30NexusOSMasterArchitectureSection';
+import { Section31GlobalExpansionArchitectureSection } from './components/Section31GlobalExpansionArchitectureSection';
+import { Section32AIKnowledgeNetworkSection } from './components/Section32AIKnowledgeNetworkSection';
+import { Section33VoiceAIOperatingSystemSection } from './components/Section33VoiceAIOperatingSystemSection';
+import { Section34IdentityAuthenticationOperatingSystemSection } from './components/Section34IdentityAuthenticationOperatingSystemSection';
+import { Section35PropertyGraphDatabaseArchitectureSection } from './components/Section35PropertyGraphDatabaseArchitectureSection';
+import { Section36DataLakeAnalyticsEngineSection } from './components/Section36DataLakeAnalyticsEngineSection';
+import { Section37AIFAQKnowledgeBaseEngineSection } from './components/Section37AIFAQKnowledgeBaseEngineSection';
+import { Section38NexusAPIEcosystemSection } from './components/Section38NexusAPIEcosystemSection';
+import { Section39MobileAppArchitectureSection } from './components/Section39MobileAppArchitectureSection';
 import { AuthPage } from './components/AuthPage';
 import { SiteDocumentPage } from './components/SiteDocumentPage';
 import { FooterSection } from './components/FooterSection';
 import { AIAssistantDrawer } from './components/AIAssistantDrawer';
+import { RoleDashboardPage } from './components/RoleDashboardPage';
+import { ProductExperiencePage } from './components/ProductExperiencePage';
+import { ProductNotFoundPage } from './components/ProductExperiencePage';
+import { PlatformRole } from './services/platformStore';
+import { canAccessRole, getCurrentUser } from './services/authService';
 import { LanguageMode, PropertyItem } from './types';
+import { SAMPLE_CITIES } from './data/sampleCities';
+import { createProperty } from './services/propertyService';
+import { SamplePropertyType } from './data/sampleProperties';
 import { soundEngine } from './utils/sound';
-import { Shield, X, CheckCircle, Lock, ArrowRight } from 'lucide-react';
+import { Shield, X, CheckCircle, Lock } from 'lucide-react';
 import agentImage from './assets/agent.png';
 import whatsappImage from './assets/whatsapp.png';
+import { LuxuryRealEstateAnimation3D } from './components/LuxuryRealEstateAnimation3D';
+import { Hero16x9CinematicAnimation } from './components/Hero16x9CinematicAnimation';
+import { ShahiQilaExperience } from './components/ShahiQilaExperience';
+import card1 from './assets/card1.png';
+import card2 from './assets/card2.png';
+import card3 from './assets/card3.png';
+import card4 from './assets/card4.png';
+import card5 from './assets/card5.png';
+import card6 from './assets/card6.png';
+import card7 from './assets/card7.png';
+import card8 from './assets/car8.png';
+import card9 from './assets/card9.png';
+import card10 from './assets/card10.png';
+import card11 from './assets/card11.png';
+import card12 from './assets/card12.png';
+import card13 from './assets/card13.png';
+import card14 from './assets/card14.png';
+import card15 from './assets/card15.png';
+import card16 from './assets/card16.png';
+import card17 from './assets/card17.png';
+import card18 from './assets/card18.png';
+import card19 from './assets/card19.png';
+import card20 from './assets/card20.png';
+import card21 from './assets/card21.png';
+import { APP_PATHS, navigateApp, PRODUCT_ROUTES, propertyDetailPath, resolveApplicationRoute } from './routing/appRoutes';
+import { AppLink } from './routing/AppLink';
+
+type BrandCardFeatureProps = {
+  image: string;
+  title: string;
+  supportingText?: string;
+};
+
+function BrandCardFeature({ image, title, supportingText }: BrandCardFeatureProps) {
+  return (
+    <section className="relative py-[60px] sm:py-[80px] lg:py-[120px]">
+      <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8">
+        <div className="mb-4 text-center">
+          <span className="inline-block text-[10px] font-mono uppercase tracking-[0.35em] text-[#D4AF37] sm:text-[11px]">
+            NEXUS PROPERTY NETWORK™
+          </span>
+        </div>
+
+        <div className="overflow-hidden rounded-[20px] border border-white/10 bg-black/20 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <img
+            src={image}
+            alt={title}
+            className="block h-auto w-full object-contain"
+          />
+        </div>
+
+        {supportingText && (
+          <div className="mt-4 text-center text-[10px] font-mono uppercase tracking-[0.28em] text-neutral-300">
+            {supportingText}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
 export default function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState('hero');
   const [lang, setLang] = useState<LanguageMode>('roman_ur');
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [selectedAgentForChat, setSelectedAgentForChat] = useState('AI Admin Supervisory Core');
-
-
-  // Modals for listing property & inquiry
   const [listModalOpen, setListModalOpen] = useState(false);
   const [inquireProperty, setInquireProperty] = useState<PropertyItem | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [animation3DOpen, setAnimation3DOpen] = useState(() => pathname === APP_PATHS.animation3d);
+  const [hero16x9Open, setHero16x9Open] = useState(() => pathname === APP_PATHS.heroAnimation);
+  const route = resolveApplicationRoute(pathname);
 
   useEffect(() => {
     const handlePathChange = () => setPathname(window.location.pathname);
@@ -51,75 +139,50 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePathChange);
   }, []);
 
-  // Monitor scroll progress for 3D camera interpolation
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalScroll > 0) {
-        setScrollProgress(window.scrollY / totalScroll);
-      }
-
-      // Track active section for navbar
-      const sectionIds = [
-        'home',
-        'problems',
-        'transformation',
-        'property-graph',
-        'workforce',
-        'property-discovery',
-        'coverage',
-        'lead-lock',
-        'deal-lock',
-        'trust',
-        'digital-government',
-        'revenue-engine',
-        'expansion-roadmap',
-        'user-journey',
-        'database-architecture',
-        'security-architecture',
-        'ai-constitution',
-        'problems-solved',
-        'ecosystems'
-      ];
-
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= window.innerHeight * 0.45 && rect.bottom >= window.innerHeight * 0.2) {
-            setActiveSection(id);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  if (pathname === '/auth/login' || pathname === '/auth/register') {
-    return <AuthPage mode={pathname.endsWith('register') ? 'register' : 'login'} />;
+  if (route.kind === 'animation3d') {
+    return <LuxuryRealEstateAnimation3D onClose={() => {
+      navigateApp(APP_PATHS.home);
+      setAnimation3DOpen(false);
+    }} />;
   }
-  if (pathname === '/privacy' || pathname === '/terms' || pathname === '/api-docs') {
-    return <SiteDocumentPage path={pathname} />;
+  if (route.kind === 'heroAnimation') {
+    return <Hero16x9CinematicAnimation standalone onClose={() => {
+      navigateApp(APP_PATHS.home);
+      setHero16x9Open(false);
+    }} />;
   }
+  if (route.kind === 'dashboard') return <ProtectedDashboardRoute role={route.role} />;
+  if (route.kind === 'auth') return <AuthPage mode={route.mode} />;
+  if (route.kind === 'document') return <SiteDocumentPage path={route.path} />;
+  if (route.kind === 'product') return (
+    <>
+      <Navbar lang={lang} setLang={setLang} currentPath={route.path} />
+      <ProductExperiencePage pathname={route.path} onOpenAssistant={() => setAssistantOpen(true)} />
+      {route.path === APP_PATHS.ai && <AIAssistantDrawer
+        isOpen={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        lang={lang}
+        setLang={setLang}
+        initialAgentName={selectedAgentForChat}
+      />}
+    </>
+  );
+  if (route.kind === 'notFound') return (
+    <>
+      <Navbar lang={lang} setLang={setLang} currentPath={pathname} />
+      <ProductNotFoundPage />
+    </>
+  );
 
-  const handleStartSearch = () => {
-    const el = document.getElementById('property-discovery');
-    el?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const handleStartSearch = () => navigateApp(APP_PATHS.marketplace);
 
   const handleListProperty = () => {
     soundEngine.playActivate();
-    setFormSubmitted(false);
-    setListModalOpen(true);
+    navigateApp(APP_PATHS.listProperty);
   };
 
-  const handleJoinNetwork = () => {
-    const el = document.getElementById('ecosystems');
-    el?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const handleFindAgent = () => navigateApp(APP_PATHS.agents);
+  const handleViewProperty = (propertyId: string) => navigateApp(propertyDetailPath(propertyId));
 
   const handleOpenAssistant = (agentName?: string) => {
     if (agentName) {
@@ -128,76 +191,178 @@ export default function App() {
     setAssistantOpen(true);
   };
 
-  const handleProtectInquire = (property: PropertyItem) => {
-    setFormSubmitted(false);
-    setInquireProperty(property);
-  };
-
   return (
     <div className="relative bg-[#06080D] text-white min-h-screen selection:bg-[#E5B842] selection:text-black">
       {/* Floating Glass Navigation Header */}
-      <Navbar
-        lang={lang}
-        setLang={setLang}
-        activeSection={activeSection}
-      />
+      <Navbar lang={lang} setLang={setLang} currentPath={pathname} />
 
       {/* Main Storytelling Sections Journey */}
       <main className="relative z-10">
-        {/* Hero Section */}
+        {/* Existing Home Hero Section (Untouched) */}
         <HeroSection
           onStartSearch={handleStartSearch}
           onListProperty={handleListProperty}
-          onJoinNetwork={handleJoinNetwork}
+          onJoinNetwork={handleFindAgent}
           onOpenAssistant={() => handleOpenAssistant('AI Admin Supervisory Core')}
           lang={lang}
         />
 
+        <section className="border-y border-white/10 bg-black/40 px-5 py-8" aria-label="Product routes and provenance">
+          <div className="mx-auto max-w-7xl">
+            <p className="mb-4 text-sm text-neutral-300">
+              Interface preview: sample listings are not verified or live inventory. Verification, agent credentials, lead/deal locks, messaging, billing, and AI services are not connected.
+            </p>
+            <nav className="flex flex-wrap gap-3" aria-label="NEXUS product pages">
+              {PRODUCT_ROUTES.map(({ id, label }) => (
+                <AppLink key={id} to={APP_PATHS[id]} className="rounded-lg border border-white/10 px-3 py-2 text-xs text-neutral-300 transition hover:border-[#D4AF37]/60 hover:text-white">
+                  {label}
+                </AppLink>
+              ))}
+            </nav>
+          </div>
+        </section>
+
+        {/* ========================================================
+            NEW SHAHI QILA / LAHORE FORT ARCHITECTURAL EXPERIENCE
+            (Directly Below Existing Hero Section, Full-Width)
+           ======================================================== */}
+        <ShahiQilaExperience />
+
         {/* Section 01: The Problem (Current Chaotic Real Estate Ecosystem) */}
         <ProblemSection />
+
+        <BrandCardFeature
+          image={card1}
+          title="Why Pakistan needs NEXUS"
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 02: Introducing Nexus OS (Chaos into Order Transformation) */}
         <TransformationSection />
 
+        <BrandCardFeature
+          image={card8}
+          title="Pakistan Property Intelligence Map"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 03: Pakistan Property Graph (5,000+ Areas) */}
         <PropertyGraphSection />
+
+        <BrandCardFeature
+          image={card16}
+          title="One Platform. Every Stakeholder."
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 04: The 54 AI Workforce & AI Admin Core */}
         <AIWorkforceSection
           onSelectAgentForChat={(agentName) => handleOpenAssistant(agentName)}
         />
 
+        <BrandCardFeature
+          image={card10}
+          title="Agency Growth & Network Performance"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 05: Floating Property Discovery (3D Glass Cards & Filters) */}
         <PropertyDiscoverySection
-          onProtectInquire={handleProtectInquire}
+          onProtectInquire={handleViewProperty}
+        />
+
+        <BrandCardFeature
+          image={card11}
+          title="Nexus Property Assistant Preview"
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        <BrandCardFeature
+          image={card19}
+          title="Pakistan Ka Pehla AI Property Assistant"
+          supportingText="Powered by NEXUS OS™"
         />
 
         {/* Section 06: Coverage Area Experience (Cinematic Drill-Down) */}
         <CoverageAreaSection />
 
+        <BrandCardFeature
+          image={card17}
+          title="Find Your Perfect Property With Confidence"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 07: Lead Lock™ Operating System */}
         <LeadLockSection />
+
+        <BrandCardFeature
+          image={card9}
+          title="Lead Chori Aur Commission Loss Ka Khatma"
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 08: Deal Lock™ Transaction Engine */}
         <DealLockSection />
 
+        <BrandCardFeature
+          image={card20}
+          title="Trust Built By AI Verification"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 09: 8-Layer Trust Infrastructure */}
         <TrustInfrastructureSection />
+
+        <BrandCardFeature
+          image={card2}
+          title="Seller Verification & Trust Layer"
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 10: Nexus Digital Government */}
         <DigitalGovernmentSection />
 
+        <BrandCardFeature
+          image={card7}
+          title="Pakistan's Trusted Property Intelligence Network"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 11: Nexus Revenue Engine & Economic Model */}
         <RevenueEngineSection />
+
+        <BrandCardFeature
+          image={card6}
+          title="Investment Decisions Without Guesswork"
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 12: National Expansion Roadmap & 10 Year Vision */}
         <ExpansionRoadmapSection />
 
+        <BrandCardFeature
+          image={card5}
+          title="Launch Projects Nationwide"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 13: Complete User Journey Architecture */}
         <UserJourneySection />
 
+        <BrandCardFeature
+          image={card21}
+          title="Invest In Pakistan From Anywhere"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 14: Complete Database Architecture */}
         <DatabaseArchitectureSection />
+
+        <BrandCardFeature
+          image={card12}
+          title="Developer Acceleration & Project Visibility"
+          supportingText="Powered by NEXUS OS™"
+        />
 
         {/* Section 15: Complete API Architecture */}
         <ApiArchitectureSection />
@@ -205,8 +370,110 @@ export default function App() {
         {/* Section 16: Security Architecture & Fraud Prevention */}
         <SecurityArchitectureSection />
 
+        <BrandCardFeature
+          image={card14}
+          title="Industrial & Commercial Opportunity Network"
+          supportingText="Powered by NEXUS OS™"
+        />
+
         {/* Section 17: Complete AI Workforce Operating Constitution */}
         <AIWorkforceConstitutionSection />
+
+        <BrandCardFeature
+          image={card4}
+          title="Agency CRM, Leads & Network in One Place"
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        {/* Phase 18: Additive enterprise implementation architecture */}
+        <EnterpriseArchitectureSection />
+
+        <BrandCardFeature
+          image={card15}
+          title="Transparent Property Ecosystem"
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        {/* Section 19: Additive user role constitution */}
+        <Section19UserRoleConstitutionSection />
+
+        <BrandCardFeature
+          image={card18}
+          title="Real Agents. Real Properties. Real Opportunities."
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        {/* Section 20: Additive dashboard operating system */}
+        <Section20DashboardOperatingSystemSection />
+
+        {/* Section 21: Additive property verification operating system */}
+        <Section21PropertyVerificationOperatingSystemSection />
+
+        <BrandCardFeature
+          image={card3}
+          title="Fake Seller Khatam. Sirf Asli Maalik."
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        {/* Section 22: Additive lead lifecycle operating system */}
+        <Section22LeadLifecycleOperatingSystemSection />
+
+        {/* Section 23: Additive deal lifecycle operating system */}
+        <Section23DealLifecycleOperatingSystemSection />
+
+        {/* Section 24: Additive payment and subscription operating system */}
+        <Section24PaymentSubscriptionOperatingSystemSection />
+
+        <BrandCardFeature
+          image={card13}
+          title="Invest With Data, Not Guesswork"
+          supportingText="Powered by NEXUS OS™"
+        />
+
+        {/* Section 25: Additive AI Admin command center */}
+        <Section25AIAdminCommandCenterSection />
+
+        {/* Section 26: Additive Super Admin command center */}
+        <Section26SuperAdminCommandCenterSection />
+
+        {/* Section 27: Additive WhatsApp and Facebook automation OS */}
+        <Section27WhatsAppFacebookAutomationOSSection />
+
+        {/* Section 28: Additive CRM and follow-up operating system */}
+        <Section28CRMFollowUpOperatingSystemSection />
+
+        {/* Section 29: Additive national property marketplace architecture */}
+        <Section29NationalPropertyMarketplaceArchitectureSection />
+
+        {/* Section 30: Additive Nexus OS master architecture */}
+        <Section30NexusOSMasterArchitectureSection />
+
+        {/* Section 31: Additive global expansion architecture */}
+        <Section31GlobalExpansionArchitectureSection />
+
+        {/* Section 32: Additive AI knowledge network architecture */}
+        <Section32AIKnowledgeNetworkSection />
+
+        {/* Section 33: Additive Voice AI operating system */}
+        <Section33VoiceAIOperatingSystemSection />
+
+        {/* Section 34: Additive identity and authentication operating system */}
+        <Section34IdentityAuthenticationOperatingSystemSection />
+
+        {/* Section 35: Additive property graph database architecture */}
+        <Section35PropertyGraphDatabaseArchitectureSection />
+
+        {/* Section 36: Additive data lake and analytics engine */}
+        <Section36DataLakeAnalyticsEngineSection />
+
+        {/* Section 37: Additive AI FAQ and knowledge base engine */}
+        <Section37AIFAQKnowledgeBaseEngineSection />
+
+        {/* Section 38: Additive Nexus API ecosystem */}
+        <Section38NexusAPIEcosystemSection />
+
+        {/* Section 39: Additive mobile app architecture */}
+        <Section39MobileAppArchitectureSection />
 
         {/* Section 18: 10 Structural Problems Solved */}
         <ProblemsSolvedSection />
@@ -216,7 +483,7 @@ export default function App() {
 
         {/* Footer & Long-Term Sovereign Vision */}
         <FooterSection
-          onJoinNetwork={handleJoinNetwork}
+          onJoinNetwork={() => navigateApp(APP_PATHS.register)}
         />
       </main>
 
@@ -301,9 +568,31 @@ export default function App() {
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
                   soundEngine.playLock();
+                  const formData = new FormData(e.currentTarget);
+                  const city = String(formData.get('city') || 'Lahore');
+                  const area = String(formData.get('area') || 'Central');
+                  const propertyType = String(formData.get('propertyType') || 'Plot') as SamplePropertyType;
+                  const size = String(formData.get('size') || '1 Kanal');
+                  const title = String(formData.get('title') || 'Live Nexus Property');
+                  const price = String(formData.get('price') || '0');
+                  await createProperty({
+                    title,
+                    propertyType,
+                    city,
+                    area,
+                    phase: String(formData.get('phase') || area),
+                    price,
+                    priceRaw: Number(price.replace(/[^0-9.]/g, '')) || 0,
+                    areaSize: size,
+                    purpose: propertyType === 'Shop' || propertyType === 'Office' || propertyType === 'Building' || propertyType === 'Commercial' ? 'Commercial' : 'Residential',
+                    description: 'Live seller listing submitted through Nexus inventory management.',
+                    image: '/images/media_1790111327854.png',
+                    agent: 'Nexus Seller Submission',
+                    galleryImages: [],
+                  });
                   setFormSubmitted(true);
                 }}
                 className="space-y-4 text-xs font-mono"
@@ -313,6 +602,7 @@ export default function App() {
                   <input
                     required
                     type="text"
+                    name="title"
                     placeholder="e.g. 1 Kanal Plot #420, DHA Phase 6 Lahore"
                     className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]"
                   />
@@ -321,23 +611,38 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-neutral-400 block mb-1">CITY</label>
-                    <select className="w-full bg-[#111111] border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]">
-                      <option>Lahore</option>
-                      <option>Islamabad</option>
-                      <option>Karachi</option>
-                      <option>Rawalpindi</option>
-                      <option>Gwadar</option>
-                      <option>Peshawar</option>
+                    <select name="city" className="w-full bg-[#111111] border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]">
+                      {SAMPLE_CITIES.map((city) => <option key={city.city}>{city.city}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="text-neutral-400 block mb-1">EXPECTED VALUE (PKR)</label>
                     <input
                       required
+                      name="price"
                       type="text"
                       placeholder="e.g. 14.5 Crore"
                       className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]"
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-neutral-400 block mb-1">AREA</label>
+                    <input name="area" required type="text" placeholder="e.g. Model Town" className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <label className="text-neutral-400 block mb-1">PHASE</label>
+                    <input name="phase" required type="text" placeholder="e.g. Phase 1" className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <label className="text-neutral-400 block mb-1">PROPERTY TYPE</label>
+                    <select name="propertyType" className="w-full bg-[#111111] border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-[#D4AF37]"><option>Plot</option><option>House</option><option>Apartment</option><option>Farm House</option><option>Building</option><option>Shop</option><option>Office</option><option>Commercial</option></select>
+                  </div>
+                  <div>
+                    <label className="text-neutral-400 block mb-1">SIZE</label>
+                    <input name="size" required type="text" placeholder="e.g. 1 Kanal" className="w-full bg-[#111111] border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]" />
                   </div>
                 </div>
 
@@ -454,6 +759,30 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* 3D Real-Estate Animation Cinema Showcase Modal (Vertical 9:16) */}
+      {animation3DOpen && (
+        <LuxuryRealEstateAnimation3D onClose={() => setAnimation3DOpen(false)} />
+      )}
+
+      {/* 16:9 Website Hero Animation Cinema Showcase Modal (Desktop 16:9) */}
+      {hero16x9Open && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <Hero16x9CinematicAnimation onClose={() => setHero16x9Open(false)} />
+        </div>
+      )}
     </div>
   );
 }
+
+const ProtectedDashboardRoute: React.FC<{ role: PlatformRole }> = ({ role }) => {
+  const user = getCurrentUser();
+  useEffect(() => {
+    if (!canAccessRole(user, role)) {
+      navigateApp(APP_PATHS.login, true);
+    }
+  }, [role, user?.id, user?.role]);
+
+  if (!user || !canAccessRole(user, role)) return <AuthPage mode="login" />;
+  return <RoleDashboardPage role={role} />;
+};

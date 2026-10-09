@@ -1,8 +1,10 @@
 // src/components/CoverageAreaSection.tsx
 import React, { useState } from 'react';
-import { Map, MapPin, ChevronRight, Layers, Building, TrendingUp, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Map, TrendingUp, ArrowRight } from 'lucide-react';
 import { PAKISTAN_CITIES } from '../data/nexusData';
 import { soundEngine } from '../utils/sound';
+import { AppLink } from '../routing/AppLink';
+import { APP_PATHS } from '../routing/appRoutes';
 
 export const CoverageAreaSection: React.FC = () => {
   const [selectedProvince, setSelectedProvince] = useState<string>('Punjab');
@@ -18,8 +20,6 @@ export const CoverageAreaSection: React.FC = () => {
     { name: 'Balochistan', cities: ['Gwadar', 'Quetta'] },
   ];
 
-  const currentCityObj = PAKISTAN_CITIES.find(c => c.name === selectedCityName) || PAKISTAN_CITIES[1];
-
   return (
     <section id="coverage" className="relative py-28 bg-[#050505] overflow-hidden">
       {/* Background Radiance */}
@@ -34,19 +34,18 @@ export const CoverageAreaSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6">
-            130+ Cities. 5,000+ Areas. One Sovereign Map.
+            Explore Sample Locations
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            Experience our 5-tier cinematic drill-down from sovereign provinces to individual plot polygons. 
-            Click through the hierarchy to observe real-time legal clearance, infrastructure ratings, and growth momentum.
+            This interactive map uses sample location data. It does not provide authoritative coverage, cadastral mapping, legal clearance, NOC status, or live market intelligence.
           </p>
         </div>
 
         {/* 5-Step Cinematic Drill-Down Path */}
         <div className="glass-card-luxury p-6 rounded-3xl border-white/10 mb-12">
           <div className="text-xs font-mono text-neutral-400 uppercase mb-4 tracking-wider">
-            INTERACTIVE CADASTRE NAVIGATION STACK:
+            SAMPLE LOCATION NAVIGATION:
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -54,44 +53,44 @@ export const CoverageAreaSection: React.FC = () => {
             <div className="p-4 rounded-2xl bg-black/60 border border-[#D4AF37]/40 relative">
               <span className="text-[10px] font-mono text-[#D4AF37] font-bold block mb-1">01 // PROVINCE</span>
               <div className="text-sm font-bold text-white">{selectedProvince}</div>
-              <span className="text-[10px] text-neutral-400 mt-1 block">Territory synchronized</span>
+              <span className="text-[10px] text-neutral-400 mt-1 block">Sample selection</span>
             </div>
 
             {/* 2. City View */}
             <div className="p-4 rounded-2xl bg-black/60 border border-[#2DD4BF]/40 relative">
               <span className="text-[10px] font-mono text-[#2DD4BF] font-bold block mb-1">02 // CITY</span>
               <div className="text-sm font-bold text-white">{selectedCityName}</div>
-              <span className="text-[10px] text-neutral-400 mt-1 block">Mapped areas available</span>
+              <span className="text-[10px] text-neutral-400 mt-1 block">Sample location data</span>
             </div>
 
             {/* 3. Area View */}
             <div className="p-4 rounded-2xl bg-black/60 border border-white/20 relative">
               <span className="text-[10px] font-mono text-neutral-400 font-bold block mb-1">03 // AREA</span>
               <div className="text-sm font-bold text-white">{selectedArea}</div>
-              <span className="text-[10px] text-neutral-400 mt-1 block">Masterplan Verified</span>
+              <span className="text-[10px] text-neutral-400 mt-1 block">Masterplan data not connected</span>
             </div>
 
             {/* 4. Society View */}
             <div className="p-4 rounded-2xl bg-black/60 border border-white/20 relative">
               <span className="text-[10px] font-mono text-neutral-400 font-bold block mb-1">04 // SOCIETY</span>
               <div className="text-sm font-bold text-white">{selectedSociety}</div>
-              <span className="text-[10px] text-neutral-400 mt-1 block">Civic NOC Valid</span>
+              <span className="text-[10px] text-neutral-400 mt-1 block">NOC data not connected</span>
             </div>
 
             {/* 5. Listings View */}
             <div className="p-4 rounded-2xl bg-gradient-to-br from-[#D4AF37]/20 to-[#2DD4BF]/20 border border-[#D4AF37] relative flex flex-col justify-between">
               <div>
-                <span className="text-[10px] font-mono text-[#D4AF37] font-bold block mb-1">05 // VERIFIED ASSETS</span>
-                <div className="text-sm font-bold text-white">Verified inventory available</div>
+                <span className="text-[10px] font-mono text-[#D4AF37] font-bold block mb-1">05 // SAMPLE LISTINGS</span>
+                <div className="text-sm font-bold text-white">Verification not established</div>
               </div>
               <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1 mt-2">
-                <ShieldCheck className="w-3 h-3" /> Protected
+                Sample data
               </span>
             </div>
           </div>
         </div>
 
-        {/* Drill-down Controls & Live Telemetry Panel */}
+        {/* Sample-location controls and unconnected metrics preview */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Step 1 & 2: Provinces and Cities Navigator */}
           <div className="lg:col-span-6 space-y-6">
@@ -144,7 +143,7 @@ export const CoverageAreaSection: React.FC = () => {
                     }`}
                   >
                     <div className="text-xs font-bold">{cityName}</div>
-                    <div className="text-[10px] font-mono text-[#2DD4BF] mt-0.5">Live Geospatial Node</div>
+                    <div className="text-[10px] font-mono text-[#2DD4BF] mt-0.5">Sample geospatial node</div>
                   </button>
                 ))}
               </div>
@@ -164,7 +163,7 @@ export const CoverageAreaSection: React.FC = () => {
               </div>
 
               <span className="px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
-                GRADE-A INFRASTRUCTURE
+                SAMPLE DATA — NOT VERIFIED
               </span>
             </div>
 
@@ -172,39 +171,38 @@ export const CoverageAreaSection: React.FC = () => {
               <div className="p-4 rounded-xl bg-black/50 border border-white/5">
                 <div className="text-[10px] font-mono text-neutral-400 mb-1">ANNUAL APPRECIATION</div>
                 <div className="text-sm font-bold text-emerald-400 flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4" /> Market intelligence active
+                  <TrendingUp className="w-4 h-4" /> Live market data not connected
                 </div>
               </div>
 
               <div className="p-4 rounded-xl bg-black/50 border border-white/5">
                 <div className="text-[10px] font-mono text-neutral-400 mb-1">CIVIC NOC STATUS</div>
-                <div className="text-sm font-bold text-[#2DD4BF] mt-1">Approval active</div>
+                <div className="text-sm font-bold text-[#2DD4BF] mt-1">NOC data not connected</div>
               </div>
 
               <div className="p-4 rounded-xl bg-black/50 border border-white/5 col-span-2 sm:col-span-1">
                 <div className="text-[10px] font-mono text-neutral-400 mb-1">SELLER INTEGRITY</div>
-                <div className="text-sm font-bold text-[#D4AF37] mt-1">Verification active</div>
+                <div className="text-sm font-bold text-[#D4AF37] mt-1">Verification not established</div>
               </div>
             </div>
 
             <p className="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed mb-6">
-              This micro-zone is continuously monitored by Satellite Boundary AI and Civic Authority NOC Validator AI. 
-              All utilities (underground electricity, gas, water filtration, security) are mapped to individual plot numbers.
+              This sample view is not monitored by live satellite, civic-authority, or utility integrations. No property-level legal or infrastructure status is asserted.
             </p>
 
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
               <div>
                 <span className="text-xs font-mono text-neutral-400 block">WANT TO EXPLORE PARCELS IN THIS AREA?</span>
-                <span className="text-sm font-bold text-white">View Verified Inventory</span>
+                <span className="text-sm font-bold text-white">Explore Sample Listings</span>
               </div>
 
-              <a
-                href="#property-discovery"
+              <AppLink
+                to={APP_PATHS.marketplace}
                 className="px-4 py-2 rounded-xl bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-[#F3CF57] transition-colors"
               >
                 <span>Discover</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </AppLink>
             </div>
           </div>
         </div>

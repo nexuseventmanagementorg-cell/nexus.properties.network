@@ -2,7 +2,8 @@
 import { AIEmployee, PropertyItem, CityNode, ProblemSolutionItem, UserEcosystem } from '../types';
 
 // ==========================================
-// ALL 54 AI EMPLOYEES OF NEXUS OS™
+// AI Workforce Registry: 54 design entries; production agents are not implied.
+// Legacy status, task, and accuracy fields are illustrative placeholders, not production telemetry.
 // ==========================================
 export const AI_EMPLOYEES: AIEmployee[] = [
   // 1. Verification & Trust Squad (12)
@@ -155,14 +156,14 @@ export const AI_EMPLOYEES: AIEmployee[] = [
   {
     id: 'ai-13',
     name: 'Lead Lock Guardian AI',
-    role: 'Cryptographic Lead Exclusivity Sentry',
+    role: 'Proposed Lead Lock Policy Assistant',
     department: 'Lead & Deal Operations',
-    description: 'Pins client phone and CNIC hashes into an encrypted lock vault, guaranteeing zero lead poaching across agencies.',
+    description: 'Design role for the documented 48-hour Lead Lock policy. Production cryptographic storage, exclusivity, and enforcement are not implemented.',
     avatarIcon: 'Lock',
     status: 'ONLINE',
     tasksCompleted: '168,400 Leads Secured',
     accuracy: '100.00%',
-    specialization: 'Lead Lock™ Cryptographic Enforcement'
+    specialization: 'Proposed Lead Lock enforcement; not implemented'
   },
   {
     id: 'ai-14',
@@ -215,14 +216,14 @@ export const AI_EMPLOYEES: AIEmployee[] = [
   {
     id: 'ai-18',
     name: 'Commission Split AI',
-    role: 'Arbitration-Free Commission Settlement',
+    role: 'Commission Participation Review (proposed)',
     department: 'Lead & Deal Operations',
-    description: 'Records lead origination and execution activity logs, settling inter-agent commission splits automatically upon deed registration.',
+    description: 'Organizes lead origination and execution records for future review; commission eligibility, participant splits, calculation, and settlement are DECISION REQUIRED and not automated.',
     avatarIcon: 'SplitSquareVertical',
     status: 'ONLINE',
-    tasksCompleted: 'PKR 14.8B Splits Computed',
-    accuracy: '100.00%',
-    specialization: 'Audit Trail Attribution & Revenue Split'
+    tasksCompleted: 'Production activity: NOT MEASURED',
+    accuracy: 'NOT MEASURED',
+    specialization: 'Proposed Audit Trail Attribution; commission policy DECISION REQUIRED'
   },
   {
     id: 'ai-19',
@@ -263,13 +264,13 @@ export const AI_EMPLOYEES: AIEmployee[] = [
   {
     id: 'ai-22',
     name: 'Lead Reopen Arbitrator AI',
-    role: 'Grace Period & Inactivity Monitor',
+    role: 'Lead Reopen Policy Review (proposed)',
     department: 'Lead & Deal Operations',
-    description: 'Governs fair release of locked leads if an assigned agent fails to contact or log follow-up activity within 4 hours.',
+    description: 'Proposed lead-reopen assistant entry. Activity thresholds, release authority, and reassignment timing are DECISION REQUIRED; no production lock monitoring is implied.',
     avatarIcon: 'RotateCcw',
     status: 'ONLINE',
-    tasksCompleted: '12,940 Re-allocations Handled',
-    accuracy: '100.00%',
+    tasksCompleted: 'Production activity: NOT MEASURED',
+    accuracy: 'NOT MEASURED',
     specialization: 'SLA Tracking & Agent Performance Rules'
   },
   {
@@ -423,7 +424,7 @@ export const AI_EMPLOYEES: AIEmployee[] = [
   {
     id: 'ai-35',
     name: 'WhatsApp AI Negotiator',
-    role: '24/7 Omnichannel Messaging Engine',
+    role: 'Proposed Omnichannel Messaging Role',
     department: 'Automation & Communication',
     description: 'Engages inquiries over WhatsApp in English, Urdu, and Roman Urdu, qualifying buyers and booking private viewings.',
     welcomeMessage: `Assalamo Alaikum. Mein WhatsApp AI Negotiator hoon. Mein buyers, sellers, agents aur agencies ke darmiyan communication workflows ko support karti hoon. Mein WhatsApp conversations ko organize karne, follow-up reminders manage karne aur approved communication records maintain karne mein madad karti hoon. Mein kisi user ki taraf se final commitment nahi karti aur na hi deal finalize karti hoon. Mein sirf communication process ko support karti hoon. Mein aap ki kis tarah madad kar sakti hoon?`,
@@ -674,12 +675,12 @@ export const AI_EMPLOYEES: AIEmployee[] = [
     name: 'AI Admin Supervisory Core',
     role: 'Supreme Operating System Intelligence',
     department: 'Legal & Governance',
-    description: 'The supreme supervisory node. Coordinates, monitors, and audits all 53 specialized AI agents in continuous consensus.',
-    welcomeMessage: `Assalamo Alaikum. Nexus Property Network mein aap ka khush aamdeed hai. Mein AI Admin hoon. Mein Nexus OS ki supervisory intelligence hoon aur poori AI Workforce meri operational supervision mein kaam karti hai. Mera maqsad platform governance, trust infrastructure, verification workflows, lead protection systems, deal protection systems aur AI workforce operations ko monitor karna hai. Mein Nexus ecosystem ke andar hone wali critical activities ka operational oversight maintain karti hoon. Mein users, listings, leads, deals, verification requests, approvals, payments aur audit records ke mutaliq monitoring workflows ko support karti hoon. Mein kisi bhi AI Assistant ki performance aur activity ko review kar sakti hoon. Agar koi unusual activity, suspicious pattern, compliance concern ya fraud risk detect hota hai to mein us ko investigation workflow mein route karti hoon. Mein fake information generate nahi karti. Mein fake listings create nahi karti. Mein fake prices create nahi karti. Mein fake statistics create nahi karti. Mein sirf verified information aur approved Nexus records ki bunyaad par decisions support karti hoon. Agar kisi request ko meri authority se upar review ki zarurat ho to mein us ko Super Admin ke paas escalate karti hoon. Super Admin Nexus ecosystem ka final human authority hai. Mein tamam 53 AI Employees ki activities ko monitor karti hoon aur ensure karti hoon ke har AI sirf apni authorized responsibilities ke andar kaam kare. Agar aap ka sawaal kisi specific department se mutaliq hai to mein aap ko relevant specialist ke saath connect kar sakti hoon. Mein aap ki kis tarah madad kar sakti hoon?`,
+    description: 'AI Admin registry entry for proposed review, recommendation, and escalation duties; no 53-agent production system or live monitoring is established.',
+    welcomeMessage: `Assalamo Alaikum. Yeh Nexus AI Workforce Registry ka AI Admin profile hai. Is roster ka hona production AI agents ya live monitoring ka saboot nahin. Main documented policies samjha sakti hoon aur review ya escalation ke liye madad kar sakti hoon; approval, suspension, freeze, payment, aur lock authority approved policy ke baghair assume nahin ki ja sakti. Main unavailable ya unverified maloomat ko guess nahin karungi. Aap kis documented workflow ke bare mein poochna chahte hain?`,
     avatarIcon: 'Crown',
     status: 'ONLINE',
-    tasksCompleted: '100% Platform Telemetry Orchestrated',
-    accuracy: '99.999%',
+    tasksCompleted: 'Production telemetry: NOT MEASURED',
+    accuracy: 'NOT MEASURED',
     specialization: 'Master Orchestration & System Governance'
   }
 ];
@@ -923,13 +924,13 @@ export const PROBLEMS_SOLVED: ProblemSolutionItem[] = [
       'Vicious commission disputes erupt upon deal closing'
     ],
     nexusSolutions: [
-      'Lead Lock™ System: Cryptographic phone/CNIC exclusivity vault',
-      'Immutable Lead Ownership Records timestamped on national graph',
-      'Smart Lead Routing Engine to qualified specialist brokers',
-      'Real-time Lead Activity Tracking with audit trails',
-      'AI Admin Override Controls preventing multi-assignment'
+      '48-hour Lead Lock policy blueprint; no production lock service or cryptographic vault is implemented',
+      'Auditable lead ownership history is a future requirement, not a live national graph',
+      'Lead routing priorities and score weights are DECISION REQUIRED',
+      'Production lead activity tracking and audit persistence are not implemented',
+      'AI Admin lock override authority is DECISION REQUIRED'
     ],
-    impactMetric: 'Zero Lead Leakage Across Network',
+    impactMetric: 'Target: auditable lead history; production service not implemented',
     icon: 'Lock'
   },
   {
@@ -944,8 +945,8 @@ export const PROBLEMS_SOLVED: ProblemSolutionItem[] = [
       'Deal Lock™ Infrastructure with cryptographic milestone signing',
       'Full Lead History Tracking with tamper-evident viewing logs',
       'Deal Ownership Records tied directly to verified digital contracts',
-      'Commission Intelligence AI calculating statutory splits automatically',
-      'Permanent Audit Trails admissible in court and society transfer desks'
+      'Commission participation evidence collection; statutory split/calculation policy is DECISION REQUIRED',
+      'Audit history is a future requirement; retention and legal admissibility are DECISION REQUIRED'
     ],
     impactMetric: 'Dispute-aware settlement controls',
     icon: 'Scale'
@@ -977,7 +978,7 @@ export const PROBLEMS_SOLVED: ProblemSolutionItem[] = [
       'Fragmented provincial silos preventing institutional capital inflow'
     ],
     nexusSolutions: [
-      'Pakistan Property Graph: Cities & 5,000+ Mapped Areas',
+      'Proposed property graph data model; location coverage and cadastral synchronization are not established',
       'Hierarchical Province → City → Area → Society → Unit schema',
       'Unified National Property Network with standardized parcel IDs',
       'Area Intelligence Infrastructure aggregating live demand vectors',
@@ -1067,13 +1068,13 @@ export const PROBLEMS_SOLVED: ProblemSolutionItem[] = [
       'Primitive manual property matching takes weeks to coordinate'
     ],
     nexusSolutions: [
-      '54 Specialized AI Employees operating like an autonomous enterprise',
+      '54 AI Workforce Registry entries; no deployed autonomous AI workforce is established',
       'Automated CRM Dispatch syncing leads, tasks, and client follow-ups',
-      '24/7 WhatsApp AI answering queries in Urdu, English, and Roman Urdu',
+      'Proposed WhatsApp answering integration; availability and production deployment are not established',
       'Algorithmic Property Matching pairing buyer vectors with seller units',
       'Automated Legal Contract Drafting generating Iqraarnama in minutes'
     ],
-    impactMetric: 'Autonomous Operating System for Real Estate',
+    impactMetric: 'Target architecture; production integrations not established',
     icon: 'Cpu'
   }
 ];
@@ -1086,56 +1087,56 @@ export const TRUST_LAYERS = [
     layer: 1,
     name: 'Identity Layer',
     badge: 'LAYER 01 // NADRA BIOMETRIC',
-    description: 'Cryptographic identity attestation ensuring every buyer, seller, broker, and agency is biometrically authenticated.',
+    description: 'Proposed identity-verification layer; biometric authentication and NADRA integration are not established.',
     protocols: ['NADRA Biometric API', 'Zero-Knowledge Proofs', 'NTN Corporate Verification']
   },
   {
     layer: 2,
     name: 'Property Layer',
     badge: 'LAYER 02 // CADASTRAL PARCEL MAPPING',
-    description: 'Binds physical plot boundaries, GPS coordinates, and society masterplans to a single immutable digital asset representation.',
+    description: 'Proposed property-data layer; authoritative cadastral, GPS, and society-masterplan connections are not established.',
     protocols: ['Cadastral GPS Polygons', 'Patwari Fard Alignment', 'Society Allotment Ledger']
   },
   {
     layer: 3,
     name: 'Verification Layer',
     badge: 'LAYER 03 // ON-GROUND & DRONE AUDIT',
-    description: 'Multi-agent consensus combining autonomous drone aerial surveys, on-ground certified field inspectors, and utility meter confirmations.',
+    description: 'Proposed verification workflow; drone, field-inspector, and utility integrations are not established.',
     protocols: ['Drone Photogrammetry', 'Field Inspector Hash', 'WAPDA/SNGPL Meter Audits']
   },
   {
     layer: 4,
     name: 'Document Layer',
     badge: 'LAYER 04 // ZERO-KNOWLEDGE DIGITAL VAULT',
-    description: 'Encrypts title deeds, allotment letters, NOC certificates, and transfer receipts into a tamper-evident digital vault.',
+    description: 'Proposed document-security design; a production document vault, cryptographic verification, and e-signature integration are not established.',
     protocols: ['SHA-256 Title Hashing', 'Zk-SNARK Document Verification', 'ETO 2002 E-Sign']
   },
   {
     layer: 5,
     name: 'Audit Layer',
     badge: 'LAYER 05 // IMMUTABLE TRANSACTION LOGS',
-    description: 'Continuous audit trail logging every lead creation, viewing appointment, price negotiation, and milestone change.',
+    description: 'Proposed audit design; production event coverage and immutable log storage are not established.',
     protocols: ['Append-Only Ledger', 'Micro-Timestamping', 'Role-Based Access Control']
   },
   {
     layer: 6,
     name: 'Fraud Layer',
     badge: 'LAYER 06 // NEURAL SPOOFING & GHOST RADAR',
-    description: 'Real-time neural sentry monitoring duplicate listings, predatory commission bid-rigging, and unauthorized lead transfers.',
+    description: 'Proposed fraud-monitoring design; real-time detection and enforcement are not established.',
     protocols: ['Perceptual Vector Matching', 'Sybil Attack Prevention', 'Anomalous Transaction Radar']
   },
   {
     layer: 7,
     name: 'Risk Layer',
     badge: 'LAYER 07 // LEGAL & ENCUMBRANCE SENTRY',
-    description: 'Monitors civil court dockets, stay order filings, tax liabilities (7E / FBR), and municipal authority NOC status.',
+    description: 'Proposed risk-data design; court, tax, and municipal NOC data integrations are not established.',
     protocols: ['High Court Docket Ingestion', 'FBR 7E Tax Validator', 'Civic Authority NOC Tracker']
   },
   {
     layer: 8,
     name: 'Trust Layer',
     badge: 'LAYER 08 // NATIONAL CONSENSUS INDEX',
-    description: 'The national consensus rating. A composite trust score from 0.0 to 100.0% assigned to each property and actor in Pakistan.',
+    description: 'Proposed trust-scoring concept. Scoring methodology, data sources, and production assignment are DECISION REQUIRED.',
     protocols: ['Multi-Agent Consensus', 'Reputation Scoring Matrix', 'National Trust Index™']
   }
 ];
@@ -1147,42 +1148,42 @@ export const LEAD_LOCK_STAGES = [
   {
     step: '01',
     name: 'Lead Creation',
-    desc: 'Buyer or seller submits inquiry via Web, WhatsApp, or API. Raw data is captured in an encrypted temporary enclave.'
+    desc: 'Proposed intake stage. Production channel integrations, consent handling, and persistent lead storage are not established by this architecture.'
   },
   {
     step: '02',
     name: 'AI Qualification',
-    desc: 'Intent Classifier AI & Budget Verifier AI conduct multi-factor screening, validating buying readiness and timeline.'
+    desc: 'Qualification criteria and evidence are DECISION REQUIRED. This roster does not establish a live qualification model.'
   },
   {
     step: '03',
     name: 'Smart Routing',
-    desc: 'Smart Lead Router AI assigns the lead to the highest-scoring verified agent specialized in that precise micro-sector.'
+    desc: 'Routing priorities, score weights, eligibility, and assignment authority are DECISION REQUIRED; no production routing is implied.'
   },
   {
     step: '04',
     name: 'Ownership Record',
-    desc: 'Cryptographic ownership certificate is minted with exact millisecond timestamp, locking agent-client pairing.'
+    desc: 'Ownership and audit records are a future requirement. No cryptographic certificate or production lock is implemented.'
   },
   {
     step: '05',
     name: 'Lead Lock™ Activated',
-    desc: 'Lead enters full protected state. Zero poaching allowed. Other agents attempting to claim lead are instantly rejected.'
+    desc: 'CANONICAL duration: 48 hours. The production lock, concurrency control, and server-enforced expiry are not implemented.'
   },
   {
     step: '06',
     name: 'Activity & Grace Watch',
-    desc: 'Assigned agent must log activity within 4 hours. Lead Reopen Arbitrator AI monitors SLA response times.'
+    desc: 'Activity threshold, extension, notifications, and reopen timing are DECISION REQUIRED; the previously shown 4-hour SLA is not approved.'
   },
   {
     step: '07',
     name: 'Verified Transfer',
-    desc: 'If agent requires co-brokerage or escalation, ownership is formally transferred with guaranteed revenue split.'
+    desc: 'Transfer authority and co-broker eligibility are DECISION REQUIRED. Commission eligibility, participant split, and settlement are not defined.'
   },
   {
     step: '08',
     name: 'Immutable History',
-    desc: 'Complete timeline archived in tamper-evident ledger for lifelong commission attribution and dispute immunity.'
+    desc: 'Auditable history is a future requirement. Retention, ledger implementation, and commission attribution rules are not approved or implemented.'
   }
 ];
 
@@ -1193,42 +1194,42 @@ export const DEAL_LOCK_STAGES = [
   {
     step: '01',
     name: 'Deal Creation',
-    desc: 'Buyer and seller agree on commercial terms. Deal Lock™ initializes a multi-party digital transaction room.'
+    desc: 'Proposed deal workflow only. Deal creation eligibility, participant roles, and production transaction storage are DECISION REQUIRED or not implemented.'
   },
   {
     step: '02',
     name: 'Deal Protection',
-    desc: 'Property title is placed into reserved deal status. Duplicate negotiations and gazumping attempts are prevented.'
+    desc: 'CANONICAL Deal Lock duration is 7 days initially and at most 15 days total. Production locking and title reservation are not implemented.'
   },
   {
     step: '03',
     name: 'Document Vault',
-    desc: 'Allotment letter, title deed, NOCs, and CNICs uploaded to cryptographic vault with SHA-256 verification.'
+    desc: 'Document storage, verification providers, access controls, and retention are future work; no cryptographic vault is established here.'
   },
   {
     step: '04',
-    name: 'Token & Bayana Escrow',
-    desc: 'Initial token deposit and Bayana payment deposited into licensed partner escrow, releasing digital receipt.'
+    name: 'Payment Milestone',
+    desc: 'Payment providers, bank/escrow partners, fees, and payment prerequisites are DECISION REQUIRED; no deposit or escrow is implied.'
   },
   {
     step: '05',
     name: 'Milestone Execution',
-    desc: 'Condition milestones (FBR tax challan payment, NDC society clearance, utility NOCs) tracked sequentially.'
+    desc: 'Milestone requirements and authorized reviewers are DECISION REQUIRED; no government or society verification is implied.'
   },
   {
     step: '06',
     name: 'Multi-Party Approvals',
-    desc: 'Buyer, seller, agent, and society registrar provide cryptographic e-signatures under ETO 2002 guidelines.'
+    desc: 'Required approvers, signature provider, legal validity, and evidence are DECISION REQUIRED; no e-signature integration is established.'
   },
   {
     step: '07',
     name: 'Transfer & Settlement',
-    desc: 'Society transfer completed; escrow funds disbursed to seller; automated commission settled to verified agents.'
+    desc: 'Transfer evidence, payment settlement, and commission calculation/allocation are DECISION REQUIRED; no automated disbursement is implemented.'
   },
   {
     step: '08',
-    name: 'Dispute Immunity Protocol',
-    desc: 'Tamper-evident legal audit package generated, sealing transaction in national real estate history.'
+    name: 'Dispute Review',
+    desc: 'Dispute holds, evidence retention, legal effect, and authorized resolution are DECISION REQUIRED; no dispute immunity or legal outcome is promised.'
   }
 ];
 
@@ -1240,57 +1241,57 @@ export const USER_ECOSYSTEMS: UserEcosystem[] = [
     id: 'buyers',
     title: 'Buyers',
     role: 'Homebuyers & Commercial Acquirers',
-    headline: 'Purchase Pakistan Property with Verified Title Records',
-    description: 'Never encounter a fake listing, phantom plot, or litigation trap again. Search through verified inventory protected by the 8-layer trust infrastructure.',
+    headline: 'Property Discovery Preview',
+    description: 'Listings may include sample data. Nexus does not currently assert authoritative title, ownership, boundary, or encumbrance verification, and cannot guarantee a risk-free purchase.',
     features: [
-      'Verified Titles & GPS Boundaries',
-      'Real-time Market Valuation Comparison',
-      'Zero Lead Poaching or Aggressive Spam',
-      'Escrow-Protected Token & Bayana Security',
-      '24/7 AI Concierge in Urdu & English'
+      'Property and location catalog preview',
+      'Live market valuation data not established',
+      'Lead Lock policy is documented for 48 hours; production enforcement is not implemented',
+      'No escrow-protected token or Bayana service is implemented',
+      'AI concierge preview in Urdu and English; not a 24/7 production service'
     ],
-    badge: 'CONSUMER PROTECTION TIER',
+    badge: 'BUYER WORKFLOW PREVIEW',
     metrics: [
-      { label: 'Verified Listings', value: 'Operational' },
-      { label: 'Fraud Monitoring', value: 'Active' }
+      { label: 'Authoritative verification', value: 'Not established' },
+      { label: 'Live fraud monitoring', value: 'Not established' }
     ]
   },
   {
     id: 'sellers',
     title: 'Sellers',
     role: 'Individual Owners & Asset Holders',
-    headline: 'Direct Market Reach with Guaranteed Lead Exclusivity',
-    description: 'List your property once on the national property network. Connect directly with qualified, pre-vetted buyers without rogue broker harassment.',
+    headline: 'Seller Listing Workflow Preview',
+    description: 'This frontend workflow does not establish production publishing, buyer qualification, duplicate prevention, lead exclusivity, legal review, or escrow services.',
     features: [
-      'Single-Authority Digital Listing Certificate',
-      'Zero Duplicate Rogue Listings of Your Asset',
-      'Direct Buyer Pre-Qualification & Proof of Funds',
-      'Automated Legal Sales Agreement (Iqraarnama)',
-      'Bank-Backed Safe Escrow Payouts'
+      'Listing form preview; no single-authority certificate is issued',
+      'Duplicate prevention is not guaranteed',
+      'Buyer pre-qualification and proof-of-funds checks are not connected',
+      'Automated legal agreements are not provided',
+      'No bank-backed escrow payout service is implemented'
     ],
-    badge: 'ASSET PROTECTION TIER',
+    badge: 'SELLER WORKFLOW PREVIEW',
     metrics: [
-      { label: 'Sales Workflow', value: 'Operational' },
-      { label: 'Price Review', value: 'Available' }
+      { label: 'Production publishing', value: 'Not established' },
+      { label: 'Escrow service', value: 'Not implemented' }
     ]
   },
   {
     id: 'agents',
     title: 'Agents',
     role: 'Elite Certified Real Estate Brokers',
-    headline: 'Your Leads Locked. Your Commissions Protected.',
-    description: 'Operate with superpowers. Never worry about another agent stealing your client. Lead Lock™ ensures your hard-won buyers and commissions are legally locked to you.',
+    headline: 'Planned Lead and Deal Workflows.',
+    description: 'Nexus documents a 48-hour Lead Lock policy, but production enforcement is not implemented. Commission eligibility, participant splits, and settlement remain DECISION REQUIRED.',
     features: [
-      'Lead Lock™ Cryptographic Client Exclusivity',
-      'Automatic Commission Split Enforcement',
-      'AI Employees Acting as Your Back-Office',
-      'Automated WhatsApp Client Engagement & Follow-Ups',
-      'Verified Inventory Access Across Pakistan'
+      'Proposed Lead Lock workflow: 48-hour duration; production enforcement is not implemented',
+      'Auditable commission participation records; calculation and settlement are DECISION REQUIRED',
+      'AI Workforce Registry previews; production assistance is not established',
+      'WhatsApp engagement and follow-up integrations are not connected',
+      'Sample inventory access; nationwide verified coverage is not established'
     ],
     badge: 'PROFESSIONAL BROKER OS',
     metrics: [
-      { label: 'Lead Protection', value: 'Active' },
-      { label: 'Commission Controls', value: 'Active' }
+      { label: 'Lead Lock enforcement', value: 'Not implemented' },
+      { label: 'Commission settlement', value: 'Decision required' }
     ]
   },
   {

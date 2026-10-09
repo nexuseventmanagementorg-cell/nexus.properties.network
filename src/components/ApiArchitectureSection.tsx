@@ -31,24 +31,24 @@ const apiGroups: ApiGroup[] = [
   { name: 'Verification', icon: Shield, endpoints: [
     { method: 'POST', path: '/api/verification/request', purpose: 'Start verification workflow', access: 'Authenticated' },
     { method: 'GET', path: '/api/verification/status/{id}', purpose: 'Read verification status', access: 'Role-based' },
-    { method: 'POST', path: '/api/verification/review', purpose: 'Review verification decision', access: 'AI Admin only' },
+    { method: 'POST', path: '/api/verification/review', purpose: 'Submit review recommendation', access: 'Authorized human decision; exact role DECISION REQUIRED' },
   ] },
   { name: 'Leads and Lead Lock', icon: Network, endpoints: [
     { method: 'POST', path: '/api/leads/create', purpose: 'Create buyer intent lead', access: 'Buyer / authenticated' },
     { method: 'POST', path: '/api/leads/qualify', purpose: 'Qualify lead intent', access: 'Lead AI' },
     { method: 'POST', path: '/api/leads/route', purpose: 'Route to specialist agent', access: 'Routing AI' },
-    { method: 'POST', path: '/api/lead-lock/create', purpose: 'Create protected lead lock', access: 'Eligible agent' },
+    { method: 'POST', path: '/api/lead-lock/create', purpose: 'Proposed 48-hour Lead Lock', access: 'Eligible agent; endpoint and production enforcement not implemented' },
     { method: 'GET', path: '/api/lead-lock/status/{id}', purpose: 'Read lock status', access: 'Authorized parties' },
-    { method: 'POST', path: '/api/lead-lock/release', purpose: 'Release lead lock', access: 'Authorized review' },
+    { method: 'POST', path: '/api/lead-lock/release', purpose: 'Proposed lock release', access: 'Release authority DECISION REQUIRED; endpoint not implemented' },
   ] },
   { name: 'Deals and Payments', icon: DollarSign, endpoints: [
     { method: 'POST', path: '/api/deals/create', purpose: 'Start deal workflow', access: 'Authorized parties' },
-    { method: 'POST', path: '/api/deals/lock', purpose: 'Activate Deal Lock', access: 'Authorized parties' },
+    { method: 'POST', path: '/api/deals/lock', purpose: 'Proposed 7-day initial / 15-day maximum Deal Lock', access: 'Participant eligibility DECISION REQUIRED; endpoint not implemented' },
     { method: 'GET', path: '/api/deals/timeline', purpose: 'Read deal events', access: 'Role-based' },
     { method: 'POST', path: '/api/payments/create', purpose: 'Create payment request', access: 'Authenticated' },
-    { method: 'POST', path: '/api/payments/verify', purpose: 'Verify payment', access: 'Payment / AI Admin' },
+    { method: 'POST', path: '/api/payments/verify', purpose: 'Verify payment evidence', access: 'Provider/server verification; integration not connected' },
     { method: 'GET', path: '/api/payments/invoice/{id}', purpose: 'Read invoice', access: 'Payment owner' },
-    { method: 'POST', path: '/api/subscriptions/activate', purpose: 'Activate subscription', access: 'Authenticated' },
+    { method: 'POST', path: '/api/subscriptions/activate', purpose: 'Activate after verified payment', access: 'Billing service; endpoint not implemented' },
   ] },
   { name: 'AI and Memory', icon: Bot, endpoints: [
     { method: 'POST', path: '/api/ai/chat', purpose: 'Main AI gateway and router', access: 'Authenticated' },
@@ -79,9 +79,9 @@ export const ApiArchitectureSection: React.FC = () => {
       <div className="pointer-events-none absolute left-1/3 top-0 h-[600px] w-[700px] rounded-full bg-[#2DD4BF]/5 blur-[180px]" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 max-w-4xl">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 px-3.5 py-1.5 text-xs font-mono tracking-widest text-[#D4AF37] glass-panel"><Code2 className="h-3.5 w-3.5" /><span>SECTION 15 // COMPLETE API ARCHITECTURE</span></div>
-          <h2 className="mb-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">One governed API layer.</h2>
-          <p className="max-w-3xl text-base font-light leading-relaxed text-neutral-300 sm:text-lg">A backend endpoint blueprint connecting clients to authentication, business services, AI routing, payments, administration, and the database. Every request is authenticated, logged, audited, and traceable.</p>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 px-3.5 py-1.5 text-xs font-mono tracking-widest text-[#D4AF37] glass-panel"><Code2 className="h-3.5 w-3.5" /><span>SECTION 15 // API BLUEPRINT — ROUTES NOT IMPLEMENTED</span></div>
+          <h2 className="mb-5 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">Proposed governed API layer.</h2>
+          <p className="max-w-3xl text-base font-light leading-relaxed text-neutral-300 sm:text-lg">These endpoint contracts are architecture examples, not deployed routes. Authentication, logging, audit, payment, lock, and database guarantees require implementation and verification.</p>
         </div>
 
         <div className="mb-10 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/40 p-4 text-xs font-mono text-neutral-400"><span className="text-[#D4AF37]">CLIENT</span><ArrowRight className="h-4 w-4" /><span>AUTH</span><ArrowRight className="h-4 w-4" /><span>BUSINESS</span><ArrowRight className="h-4 w-4" /><span>AI</span><ArrowRight className="h-4 w-4" /><span>PAYMENTS</span><ArrowRight className="h-4 w-4" /><span>ADMIN</span><ArrowRight className="h-4 w-4" /><span className="text-[#2DD4BF]">DATABASE</span></div>

@@ -35,6 +35,12 @@ export interface PropertyItem {
   annualRoi?: string;
   image: string;
   coordinates: [number, number]; // lat, lng
+  phase?: string;
+  status?: string;
+  features?: string[];
+  agent?: string;
+  verificationStatus?: string;
+  sampleTags?: string[];
 }
 
 export interface CityNode {

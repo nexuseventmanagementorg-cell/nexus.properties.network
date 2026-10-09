@@ -2,10 +2,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bot, X, Mic, MicOff, Volume2, VolumeX, Send, ArrowRight, Sparkles, RefreshCw, Crown, Shield } from 'lucide-react';
 import { AI_EMPLOYEES } from '../data/nexusData';
+import { SAMPLE_AREAS } from '../data/sampleAreas';
+import { SAMPLE_CITIES } from '../data/sampleCities';
+import { SamplePropertyType } from '../data/sampleProperties';
+import { searchProperties } from '../services/propertyService';
 import { soundEngine } from '../utils/sound';
 import { LanguageMode, AIEmployee } from '../types';
 import agentImage from '../assets/agent.png';
 import { routeMessage, RoutingDecision } from '../utils/routingEngine';
+import { speechIntelligenceEngine } from '../utils/speechIntelligence';
+import { findFAQAnswer } from '../data/faqData';
+import { intentToNaturalConfirmation, parsePropertyIntent, PropertyIntent } from '../utils/propertyIntentParser';
 
 interface Message {
   sender: 'ai' | 'user';
@@ -14,6 +21,21 @@ interface Message {
   agentName?: string;
 }
 
+type ConversationDomain = 'property' | 'lead' | 'deal' | 'verification' | 'payments' | 'crm' | 'subscriptions' | 'marketplace' | 'faq';
+
+const detectConversationDomain = (query: string): ConversationDomain => {
+  const text = query.toLowerCase();
+  if (/lead\s*lock|lead theft|lead poach|client poach/.test(text)) return 'lead';
+  if (/deal\s*lock|deal milestone|commission|escrow/.test(text)) return 'deal';
+  if (/verify|verification|title|ownership|document/.test(text)) return 'verification';
+  if (/payment|jazzcash|easypaisa|invoice|refund/.test(text)) return 'payments';
+  if (/crm|contact|follow.?up|appointment|task|note/.test(text)) return 'crm';
+  if (/subscription|billing plan|premium plan/.test(text)) return 'subscriptions';
+  if (/marketplace|property portal|national inventory/.test(text)) return 'marketplace';
+  if (/plot|house|ghar|property|apartment|flat|shop|dukan|office|building|farm\s*house|investment|invest|commercial|residential|budget|crore|lakh|lac|marla|kanal|bedroom|phase|\bin\b|\bmein\b|\bchahiye\b/.test(text)) return 'property';
+  return 'faq';
+};
+
 interface AIAssistantDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +43,98 @@ interface AIAssistantDrawerProps {
   setLang: (l: LanguageMode) => void;
   initialAgentName?: string;
 }
+
+const formatAssistantResponse = (text: string) => text
+  .replace(/^\[[^\]]+\]:\s*/u, '')
+  .replace(/SAMPLE-\d+-[A-Z]-\d+:\s*/gi, '')
+  .replace(/\s*(\|\||\||::|---|###)\s*/g, '. ')
+  .replace(/[{}[\]]/g, '')
+  .replace(/[ \t]+/g, ' ')
+  .replace(/\n{3,}/g, '\n\n')
+  .trim();
+
+const buildRequirementConfirmation = (query: string, lang: LanguageMode) => {
+  const lower = query.toLowerCase();
+  const city = SAMPLE_CITIES.find((item) => lower.includes(item.city.toLowerCase()));
+  const area = SAMPLE_AREAS.find((item) => lower.includes(item.name.toLowerCase()));
+  const sizeMatch = query.match(/\b\d+(?:\.\d+)?\s*(?:kanal|marla|sq\.?\s*ft|square\s+feet)\b/i);
+  const size = sizeMatch?.[0] || '';
+  const location = area && city
+    ? `${area.name} ${city.city}`
+    : city?.city || area?.name || query.match(/\bin\s+(.+?)(?:\s+(?:dikhao|dikhayein|show|please)|$)/i)?.[1]?.trim() || '';
+  const verification = /\bverified?\b|\bverification\b/i.test(query) ? 'verified ' : '';
+  const isInvestment = /\binvestment\b|\binvest\b/i.test(query);
+  const isCommercial = /\bcommercial\b/i.test(query);
+  const isResidential = /\bresidential\b/i.test(query);
+  const propertyType = isCommercial && /\bplot\b/i.test(query)
+    ? 'commercial plot'
+    : isResidential && /\bplot\b/i.test(query)
+      ? 'residential plot'
+      : /\bapartment\b|\bflat\b/i.test(query)
+        ? 'apartment'
+        : /\bfarm\s+house\b/i.test(query)
+          ? 'farm house'
+          : /\bhouse\b/i.test(query)
+            ? 'house'
+            : /\bplot\b/i.test(query)
+              ? 'plot'
+              : /\bshop\b/i.test(query)
+                ? 'shop'
+                : /\boffice\b/i.test(query)
+                  ? 'office'
+                  : /\bbuilding\b/i.test(query)
+                    ? 'building'
+                    : isCommercial
+                      ? 'commercial property'
+                      : 'property options';
+  const requirement = isInvestment
+    ? `${location ? `${location} mein ` : ''}investment ke liye behtareen property options`
+    : `${location ? `${location} mein ` : ''}${verification}${size ? `${size} ` : ''}${propertyType}`.trim();
+
+  if (lang === 'en') return `You would like to see ${requirement}.`;
+  if (lang === 'ur') return `آپ ${requirement} دیکھنا چاہتے ہیں۔`;
+  return `Aap ${requirement} dekhna chahte hain.`;
+};
+
+const buildPropertyReply = async (query: string, lang: LanguageMode, includeGreeting: boolean, intent: PropertyIntent): Promise<string | null> => {
+  const lower = query.toLowerCase();
+  const city = SAMPLE_CITIES.find((item) => item.city === intent.city);
+  const propertyType: SamplePropertyType | undefined = intent.propertyType;
+
+  if (!city || !propertyType) return null;
+
+  const visibleResults = (await searchProperties({
+    city: city.city,
+    area: intent.area,
+    phase: intent.phase,
+    propertyType,
+    purpose: intent.purpose,
+    maxPriceRaw: intent.budgetMaxRaw,
+    minBedrooms: intent.bedrooms,
+    sizeText: intent.sizeText,
+  })).slice(0, 3);
+
+  if (!visibleResults.length) return null;
+
+  const property = visibleResults[0];
+  const isLive = 'state' in property && property.state === 'LIVE PROPERTY';
+  const confirmation = intentToNaturalConfirmation(intent, lang);
+  const greeting = includeGreeting ? (lang === 'en' ? 'Hello.' : lang === 'ur' ? 'خوش آمدید۔' : 'Assalamo Alaikum.') : '';
+  const location = `${property.area}, ${city.city}`;
+  const requestedTypeLabel = propertyType === 'Commercial' && lower.includes('plot')
+    ? 'commercial plot'
+    : propertyType.toLowerCase();
+
+  if (lang === 'en') {
+    return `${greeting}${greeting ? '\n\n' : ''}${confirmation}\n\n${isLive ? 'I found a live property record.' : 'No live property record was found.'}\n\nLocation ${location}.\n\nSize ${property.areaSize}.\n\nPrice ${property.price}.\n\nStatus ${isLive ? 'Live Property' : 'Unavailable'}.\n\nMy recommendation is to compare the location, size, and price before making a decision. You can ask for another area or budget range next.`;
+  }
+
+  if (lang === 'ur') {
+    return `${greeting}${greeting ? '\n\n' : ''}${confirmation}\n\n${isLive ? 'ایک لائیو پراپرٹی ریکارڈ دستیاب ہے۔' : 'اس علاقے میں کوئی لائیو پراپرٹی ریکارڈ نہیں ملا۔'}\n\nمقام ${location}.\n\nسائز ${property.areaSize}.\n\nقیمت ${property.price}.\n\nحیثیت ${isLive ? 'لائیو پراپرٹی' : 'دستیاب نہیں'}.\n\nمیری تجویز ہے کہ فیصلہ کرنے سے پہلے جگہ، سائز اور قیمت کا موازنہ کریں۔`;
+  }
+
+  return `${greeting}${greeting ? '\n\n' : ''}${confirmation}\n\n${isLive ? 'Mujhe ek live property record mili hai.' : 'Is area me koi live property record nahi mila.'}\n\nLocation ${location}.\n\nSize ${property.areaSize}.\n\nPrice ${property.price}.\n\nStatus ${isLive ? 'Live Property' : 'Unavailable'}.\n\nMeri recommendation hai ke faisla karne se pehle location, size aur price ka muqabla karein.`;
+};
 
 export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
   isOpen,
@@ -43,23 +157,40 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const spokenGreetingRef = useRef('');
+  const lastInteractionAtRef = useRef(Date.now());
+  const conversationContextRef = useRef<{ property: PropertyIntent; lead: string[]; deal: string[]; faq: string[] }>({ property: { confidence: 0 }, lead: [], deal: [], faq: [] });
+  const memoryStorageKey = 'nexus_ai_memory';
 
-  const normalizeChatScript = (text: string) => text
-    .replace(/\bmein\b/gi, 'mey')
-    .replace(/\bme\b/gi, 'mey')
-    .replace(/\bhai\b/gi, 'hey');
+  const saveMemory = (entry: { type: string; value: string }) => {
+    try {
+      const globalStore = (globalThis as Record<string, unknown>).__nexus_ai_memory__ as Array<{ type: string; value: string; createdAt: string }> | undefined;
+      const current = Array.isArray(globalStore) ? globalStore : [];
+      const next = [...current, { ...entry, createdAt: new Date().toISOString() }].slice(-100);
+      (globalThis as Record<string, unknown>).__nexus_ai_memory__ = next;
+    } catch {
+      // Runtime memory fallback only; no localStorage dependency remains.
+    }
+  };
+
+  const normalizeChatScript = (text: string) => lang === 'roman_ur'
+    ? text
+      .replace(/\baik\b/gi, 'ek')
+      .replace(/\bmein\b/gi, 'main')
+      .replace(/\bmey\b/gi, 'main')
+      .replace(/\bchahye\b/gi, 'chahiye')
+    : text;
 
   const getWelcomeMessage = (agentName: string) => {
     if (lang === 'en') {
-      return `Greetings. I am ${agentName} of NEXUS OS™. I supervise inventory verification, Lead Lock™ protection, and nationwide property queries across 130+ Pakistani cities. How may I assist your real estate operations today?`;
+      return `Greetings. This is a preview of the ${agentName} role in the Nexus AI Workforce Registry. It is not a deployed production agent, and live property, verification, and lock services are not established here. What would you like to explore?`;
     }
     if (lang === 'ur') {
-      return `خوش آمدید! میں NEXUS OS™ کا ${agentName} ہوں۔ میں پاکستان کے 130 سے زائد شہروں میں پراپرٹی کی تصدیق، لیڈ لاک اور لین دین کے انتظام کے لیے حاضر ہوں۔ میں آپ کی کیا مدد کر سکتا ہوں؟`;
+      return `خوش آمدید! یہ Nexus AI Workforce Registry میں ${agentName} کے کردار کا پیش نظارہ ہے، فعال production agent نہیں۔ یہاں براہ راست پراپرٹی، تصدیق یا Lead Lock سروس قائم نہیں ہے۔ آپ کس چیز کے بارے میں جاننا چاہتے ہیں؟`;
     }
     if (activeAgent.welcomeMessage) {
       return normalizeChatScript(activeAgent.welcomeMessage);
     }
-    return normalizeChatScript(`Assalamo Alaikum! Me NEXUS OS ka ${agentName} hoon. Pakistan ke 130+ shehron me verified plots, Lead Lock™ protection aur safe deal execution ke liye aap mujh se sawal pooch sakte hain. Kya information chahye aapko?`);
+    return normalizeChatScript(`Assalamo Alaikum! Yeh Nexus AI Workforce Registry mein ${agentName} ke role ka preview hai, deployed production agent nahin. Yahan live property, verification, ya Lead Lock service available honay ka dawa nahin kiya ja raha. Aap kis cheez ke baare mein maloomat chahte hain?`);
   };
 
   // Voice lists load asynchronously in Chrome and Edge.
@@ -160,18 +291,14 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
     window.speechSynthesis.cancel();
 
-    const speechText = text
-      .replace(/[™®©]/g, '')
-      .replace(/[#*_`]/g, '')
-      .replace(/(\d+)\s*\+/g, '$1 plus')
-      .replace(/[+:;()[\]{}<>/\\|]/g, ' ')
+    const isUrduSpeech = lang === 'ur' || lang === 'roman_ur';
+    const speechText = speechIntelligenceEngine
+      .normalizeForSpeech(text)
       .replace(/\s+/g, ' ')
       .trim();
-
     if (!speechText) return;
 
     setIsSpeaking(true);
-    const isUrduSpeech = lang === 'ur' || lang === 'roman_ur';
     const normalizedLanguage = isUrduSpeech ? 'ur' : 'en';
     const languageMatches = availableVoices.filter(voice => voice.lang.toLowerCase().startsWith(normalizedLanguage));
     const pakistanVoices = availableVoices.filter(voice => /ur[-_ ]?pk|urdu|pakistan|hi[-_ ]?in|hindi/i.test(`${voice.name} ${voice.lang}`));
@@ -214,6 +341,21 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
     soundEngine.playClick();
     const userText = inputMessage;
+    const domain = detectConversationDomain(userText);
+    const isPropertyContinuation = domain === 'faq' && /^(?:\d+(?:\.\d+)?\s*(?:marla|kanal|acre)|budget\b|under\b|upto\b|\d+\s*bed(?:room)?s?|phase\s*\w+)\b/i.test(userText.trim());
+    const isPropertyTurn = domain === 'property' || isPropertyContinuation;
+    const freshIntent: PropertyIntent = isPropertyTurn ? parsePropertyIntent(userText) : { confidence: 0 };
+    const hasNewPropertyAnchor = Boolean(freshIntent.city || freshIntent.area || freshIntent.phase || freshIntent.propertyType || freshIntent.purpose);
+    const propertyBase = hasNewPropertyAnchor
+      ? { city: conversationContextRef.current.property.city, area: conversationContextRef.current.property.area, confidence: conversationContextRef.current.property.confidence }
+      : conversationContextRef.current.property;
+    const currentIntent: PropertyIntent = isPropertyTurn ? parsePropertyIntent(userText, propertyBase) : { confidence: 0 };
+    if (isPropertyTurn) conversationContextRef.current.property = currentIntent;
+    else if (domain === 'lead' || domain === 'deal') conversationContextRef.current[domain].push(userText);
+    else conversationContextRef.current.faq.push(userText);
+    saveMemory({ type: 'conversation', value: userText });
+    const shouldGreet = Date.now() - lastInteractionAtRef.current > 15 * 60 * 1000;
+    lastInteractionAtRef.current = Date.now();
     const decision = routeMessage(userText);
     setRoutingDecision(decision);
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -230,10 +372,11 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     setInputMessage('');
 
     // Generate Contextual AI Response
-    setTimeout(() => {
+    setTimeout(async () => {
       soundEngine.playActivate();
       let reply = '';
       const lower = userText.toLowerCase();
+      const propertyIntent = /\b(plot|house|apartment|flat|shop|office|building|property|commercial|residential|investment|investor|farm house)\b/i.test(userText);
 
       if (decision.level === 'REJECTED') {
         reply = lang === 'roman_ur'
@@ -247,48 +390,84 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           reply = lang === 'roman_ur'
           ? 'AI Admin activate ho gaya hai. Is request ko investigation workflow me route kiya ja raha hai aur audit record maintain kiya jayega.'
           : 'AI Admin has been activated. This request is being routed to an investigation workflow and an audit record will be maintained.';
-      } else if (lang === 'en') {
-        if (lower.includes('lead lock') || lower.includes('theft') || lower.includes('poach')) {
-          reply = `[Lead Lock™ Guardian AI]: Your inquiry is hashed using SHA-256 and locked into your client dossier. In NEXUS OS, no other agent can poach or contact your buyer. Guaranteed zero client leakage across the entire network.`;
-        } else if (lower.includes('lahore') || lower.includes('dha') || lower.includes('plot')) {
-          reply = `[Listing Auditor AI]: DHA Phase 6 and Prism Lahore are showing strong market activity with verified cadastral boundaries. Direct-owner parcels with active NOCs are available for review.`;
-        } else if (lower.includes('karachi') || lower.includes('clifton')) {
-          reply = `[Commercial ROI AI]: Clifton and DHA Phase 8 Karachi have strong rental demand. Listed waterfront properties are checked against High Court docket stay orders.`;
-        } else if (lower.includes('islamabad') || lower.includes('f-7') || lower.includes('blue area')) {
-          reply = `[Valuation AI]: Islamabad Blue Area commercial floorplates are being benchmarked against current market evidence. Deal Lock™ escrow is mandatory for high-value transfers.`;
-        } else {
-          reply = `[${activeAgent.name}]: Telemetry confirmed. In NEXUS OS, every property parcel is verified, every lead is locked, and every transaction is dispute-aware. I can connect you with an AI specialist for detailed underwriting.`;
-        }
-      } else if (lang === 'ur') {
-        if (lower.includes('lead') || lower.includes('لیڈ') || lower.includes('چوری')) {
-          reply = `لیڈ لاک™ سسٹم آپ کی تمام لیڈز کو محفوظ رکھتا ہے۔ کسی دوسرے ایجنٹ کو آپ کے کلائنٹ تک رسائی نہیں مل سکتی۔ تمام ریکارڈ محفوظ ہیں۔`;
-        } else if (lower.includes('لاہور') || lower.includes('lahore') || lower.includes('ڈی ایچ اے')) {
-          reply = `لاہور ڈی ایچ اے فیز 6 اور پرزم میں تصدیق شدہ پلاٹس دستیاب ہیں۔ فرد اور رجسٹری ریکارڈز کی آن گراؤنڈ تصدیق کی گئی ہے۔`;
-        } else {
-          reply = `آپ کی درخواست موصول ہو گئی ہے۔ NEXUS OS پاکستان بھر میں شفافیت اور خودکار تصدیق کے لیے کام کر رہا ہے۔ کیا آپ پراپرٹی خریدنا چاہتے ہیں یا لسٹ کرنا چاہتے ہیں؟`;
-        }
       } else {
-        // Roman Urdu
-        if (lower.includes('lead') || lower.includes('chori') || lower.includes('poach')) {
-          reply = `Lead Lock™ system ke teht aapka client 100% aapke naam par cryptographically lock ho jata hai. Koi doosra broker aapki lead poach nahi kar sakta!`;
-        } else if (lower.includes('plot') || lower.includes('lahore') || lower.includes('dha') || lower.includes('karachi')) {
-          reply = `NEXUS OS me 130+ cities ki verified properties available hain. DHA Lahore, Karachi Clifton aur Islamabad Blue Area me direct owner inventory verified hai.`;
+        const propertyReply = isPropertyTurn && (currentIntent.city || currentIntent.area) ? await buildPropertyReply(userText, lang, shouldGreet, currentIntent) : null;
+
+        if (propertyReply) {
+          reply = propertyReply;
+        } else if (isPropertyTurn && !currentIntent.city && !currentIntent.area) {
+          reply = lang === 'ur'
+            ? 'براہ کرم شہر یا علاقہ بتائیں تاکہ میں درست پراپرٹی تلاش کر سکوں۔'
+            : lang === 'roman_ur'
+              ? 'Meherbani karke city ya area batayein taa ke main sahi property search kar sakun.'
+              : 'Which city or area should I search?';
+        } else if (isPropertyTurn) {
+          reply = lang === 'roman_ur'
+            ? 'Is exact requirement ke liye abhi koi matching listing nahi mili. City, area, size ya budget change karke dobara try karein.'
+            : lang === 'ur'
+              ? 'اس مخصوص ضرورت کے لیے کوئی مماثل لسٹنگ نہیں ملی۔ شہر، علاقہ، سائز یا بجٹ تبدیل کر کے دوبارہ کوشش کریں۔'
+              : 'No listing matches this exact requirement yet. Try another city, area, size, or budget.';
         } else {
-          reply = `Aapka sawal confirm ho gaya hai. NEXUS OS ke 54 AI Employees 24/7 online hain. Aap verified plot search kar sakte hain ya apni property secure tareeqay se list kar sakte hain.`;
+          const faq = findFAQAnswer(userText);
+          if (faq) {
+            reply = `[${faq.category} FAQ]: ${faq.answer}`;
+          }
+        }
+
+        if (!reply && lang === 'en') {
+          if (lower.includes('lead lock') || lower.includes('theft') || lower.includes('poach')) {
+          reply = `The canonical Lead Lock duration is 48 hours, but production lock enforcement is not implemented. Eligibility, fees, payment prerequisites, release authority, and extensions remain DECISION REQUIRED.`;
+          } else if (lower.includes('lahore') || lower.includes('dha') || lower.includes('plot')) {
+          reply = `I do not have authoritative live inventory or verification data. Please provide a city, area, budget, and property type; sample records must not be treated as verified listings.`;
+          } else if (lower.includes('karachi') || lower.includes('clifton')) {
+          reply = `I do not have authoritative live inventory or market data for Karachi. Any sample records or market estimates shown in this preview are not verified evidence.`;
+          } else if (lower.includes('islamabad') || lower.includes('f-7') || lower.includes('blue area')) {
+          reply = `I do not have authoritative live inventory or valuation data for Islamabad. Deal Lock is not an escrow service, and its production enforcement is not implemented.`;
+          } else {
+          reply = `This is a scripted preview of the ${activeAgent.name} registry role. It has no verified live telemetry or connected production workflow.`;
+          }
+        } else if (!reply && lang === 'ur') {
+          if (lower.includes('lead') || lower.includes('لیڈ') || lower.includes('چوری')) {
+          reply = `Nexus کے طے شدہ اصول میں Lead Lock کی مدت 48 گھنٹے ہے، لیکن production lock enforcement موجود نہیں۔ اہلیت، فیس، ادائیگی، release authority اور extension کے فیصلے ابھی درکار ہیں۔`;
+          } else if (lower.includes('لاہور') || lower.includes('lahore') || lower.includes('ڈی ایچ اے')) {
+          reply = `میرے پاس براہ راست مستند inventory یا verification data موجود نہیں۔ براہ کرم شہر، علاقہ، بجٹ اور پراپرٹی کی قسم بتائیں؛ sample records کو verified listing نہ سمجھیں۔`;
+          } else {
+          reply = `یہ Nexus AI Workforce Registry کے کردار کا scripted preview ہے، فعال production agent نہیں۔ براہ راست data یا workflow integration قائم نہیں ہے۔`;
+          }
+        } else if (!reply) {
+          if (lower.includes('lead') || lower.includes('chori') || lower.includes('poach')) {
+          reply = `Nexus ki canonical Lead Lock duration 48 hours hai, lekin production lock service abhi implement nahin hui. Eligibility, release authority, extension, fee, aur payment prerequisite DECISION REQUIRED hain.`;
+          } else if (lower.includes('plot') || lower.includes('lahore') || lower.includes('dha') || lower.includes('karachi')) {
+          reply = `Is waqt mujhe authoritative live inventory data available nahin hai. Aap city, area, budget, aur property type batayen; sample data ko verified listing nahin samjha jayega.`;
+          } else {
+          reply = `Aapka sawal confirm ho gaya hai. Nexus AI Workforce Registry mein 54 assistant entries hain; yeh 54 deployed production agents ya 24/7 service ka saboot nahin. Live integrations aur service availability abhi establish nahin hain.`;
+          }
         }
       }
+
+      const requirementConfirmation = intentToNaturalConfirmation(currentIntent, lang);
+      const responseWithRequirement = propertyIntent && !reply.startsWith(requirementConfirmation)
+        ? `${requirementConfirmation}\n\n${reply}`
+        : reply;
+      const greetingPrefix = shouldGreet
+        ? lang === 'en' ? 'Hello.' : lang === 'ur' ? 'خوش آمدید۔' : 'Assalamo Alaikum.'
+        : '';
+      const responseWithGreeting = greetingPrefix && !responseWithRequirement.startsWith(greetingPrefix)
+        ? `${greetingPrefix}\n\n${responseWithRequirement}`
+        : responseWithRequirement;
+      const userFacingReply = normalizeChatScript(formatAssistantResponse(responseWithGreeting));
 
       setMessages(prev => [
         ...prev,
         {
           sender: 'ai',
-          text: normalizeChatScript(reply),
+          text: userFacingReply,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           agentName: activeAgent.name
         }
       ]);
 
-      speakText(normalizeChatScript(reply));
+      speakText(userFacingReply);
     }, 600);
   };
 
@@ -313,10 +492,10 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-white tracking-wide">{activeAgent.name}</h3>
+                <h3 className="text-sm font-bold text-white tracking-wide">Nexus Property Advisor</h3>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               </div>
-              <p className="text-[10px] font-mono text-[#D4AF37]">{activeAgent.department}</p>
+              <p className="text-[10px] font-mono text-[#D4AF37]">Property guidance and support</p>
             </div>
           </div>
 
@@ -352,7 +531,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
         {/* Dynamic Agent Switcher Ribbon */}
         <div className="px-4 py-2 bg-black/40 border-b border-white/5 flex items-center justify-between text-xs font-mono">
-          <span className="text-neutral-400 text-[10px]">TRANSFER CONSULTATION:</span>
+          <span className="text-neutral-400 text-[10px]">CHOOSE SPECIALIST:</span>
           <select
             value={activeAgent.name}
             onChange={(e) => {
@@ -364,7 +543,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           >
             {AI_EMPLOYEES.map((emp) => (
               <option key={emp.id} value={emp.name} className="bg-black text-white">
-                {emp.name} ({emp.department})
+                {emp.role}
               </option>
             ))}
           </select>
@@ -372,24 +551,14 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
         {/* Chat Messages Body */}
         <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4">
-          {routingDecision && (
-            <div className="rounded-xl border border-[#2DD4BF]/30 bg-[#2DD4BF]/10 p-3 text-[10px] font-mono text-neutral-300">
-              <div className="flex items-center justify-between gap-3 text-[#2DD4BF] font-bold">
-                <span>ROUTER // {routingDecision.level.replace('_', ' ')}</span>
-                <span>{routingDecision.specialists.length ? 'TRANSFER ACTIVE' : 'REQUEST BLOCKED'}</span>
-              </div>
-              <div className="mt-1">{routingDecision.reason}</div>
-              <div className="mt-1 text-neutral-500">{routingDecision.responsePolicy}</div>
-            </div>
-          )}
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
             >
-              {msg.agentName && (
+              {msg.agentName && msg.sender === 'ai' && (
                 <span className="text-[10px] font-mono text-[#D4AF37] mb-1 px-1">
-                  {msg.agentName}
+                  Nexus Property Advisor
                 </span>
               )}
               <div className={`flex items-end gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -404,7 +573,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
                   className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                   msg.sender === 'user'
                     ? 'bg-[#D4AF37] text-black font-medium rounded-tr-none'
-                    : 'glass-card-luxury text-neutral-200 border-white/10 rounded-tl-none'
+                    : 'glass-card-luxury text-neutral-200 border-white/10 rounded-tl-none whitespace-pre-line'
                   }`}
                 >
                   {msg.text}

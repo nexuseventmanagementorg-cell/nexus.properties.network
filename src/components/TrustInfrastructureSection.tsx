@@ -23,13 +23,12 @@ export const TrustInfrastructureSection: React.FC = () => {
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-            Trust is not a feature.
-            <span className="block text-gold-gradient">Trust is infrastructure.</span>
+            Proposed trust architecture.
+            <span className="block text-gold-gradient">Not a live verification service.</span>
           </h2>
 
           <p className="text-base sm:text-lg text-neutral-300 font-light leading-relaxed">
-            In a high-stakes market like Pakistan, trust cannot rely on marketing slogans or handshakes. 
-            NEXUS OS builds trust as an 8-layer cryptographic, biometric, and cadastral protocol stack.
+            The eight layers below are design proposals only. Production identity, cadastral, document, audit, fraud, and trust-score integrations have not been established.
           </p>
         </div>
 
@@ -97,7 +96,7 @@ export const TrustInfrastructureSection: React.FC = () => {
               </div>
 
               <span className="px-3 py-1 rounded-lg bg-[#2DD4BF]/10 text-[#2DD4BF] font-mono text-xs font-bold border border-[#2DD4BF]/30">
-                ACTIVE CONSENSUS
+                DESIGN ONLY
               </span>
             </div>
 
@@ -107,12 +106,12 @@ export const TrustInfrastructureSection: React.FC = () => {
 
             <div className="space-y-3 mb-6">
               <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
-                Cryptographic Sub-Protocols & Gateways:
+                Proposed Integration Targets (Not Connected):
               </div>
               {TRUST_LAYERS[selectedLayer].protocols.map((proto, pIdx) => (
                 <div key={pIdx} className="p-3.5 rounded-xl bg-black/60 border border-white/5 flex items-center justify-between text-xs font-mono">
                   <span className="text-white font-semibold">{proto}</span>
-                  <span className="text-emerald-400 font-bold">VERIFIED</span>
+                  <span className="text-amber-300 font-bold">NOT CONNECTED</span>
                 </div>
               ))}
             </div>

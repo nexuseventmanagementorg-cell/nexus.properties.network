@@ -218,8 +218,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="p-3 rounded-xl bg-black/60 border border-white/5 flex items-center gap-3">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <div>
-                  <div className="text-base font-extrabold text-emerald-400">Active</div>
-                  <div className="text-[10px] text-neutral-400 font-mono">Active Leads</div>
+                  <div className="text-base font-extrabold text-emerald-400">Sample</div>
+                  <div className="text-[10px] text-neutral-400 font-mono">Demo Lead State</div>
                 </div>
               </div>
             </div>
@@ -239,8 +239,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="p-3.5 rounded-xl bg-black/50 border border-white/5 flex items-center gap-3">
             <Shield className="w-5 h-5 text-[#E5B842] shrink-0" />
             <div>
-              <div className="text-xs font-bold text-white">Verified Listings</div>
-              <div className="text-[10px] text-neutral-400 font-mono">Verified Properties</div>
+              <div className="text-xs font-bold text-white">Sample Listings</div>
+              <div className="text-[10px] text-neutral-400 font-mono">No verification asserted</div>
             </div>
           </div>
 
@@ -255,8 +255,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="p-3.5 rounded-xl bg-black/50 border border-white/5 flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-[#E5B842] shrink-0" />
             <div>
-              <div className="text-xs font-bold text-white">Secure Deals</div>
-              <div className="text-[10px] text-neutral-400 font-mono">AI Negotiation & Escrow</div>
+              <div className="text-xs font-bold text-white">Deal Workflow Blueprint</div>
+              <div className="text-[10px] text-neutral-400 font-mono">No live escrow integration</div>
             </div>
           </div>
 
@@ -264,15 +264,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <Sparkles className="w-5 h-5 text-[#00E599] shrink-0" />
             <div>
               <div className="text-xs font-bold text-white">AI Assistance</div>
-              <div className="text-[10px] text-neutral-400 font-mono">24/7 Smart Support</div>
+              <div className="text-[10px] text-neutral-400 font-mono">Scripted preview; not a live service</div>
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-black/50 border border-white/5 flex items-center gap-3 col-span-2 md:col-span-1">
             <Globe className="w-5 h-5 text-[#E5B842] shrink-0" />
             <div>
-              <div className="text-xs font-bold text-white">Nationwide Coverage</div>
-              <div className="text-[10px] text-neutral-400 font-mono">130+ Cities | 5,000+ Areas</div>
+              <div className="text-xs font-bold text-white">Coverage Catalog</div>
+              <div className="text-[10px] text-neutral-400 font-mono">Sample locations; live coverage not established</div>
             </div>
           </div>
         </div>

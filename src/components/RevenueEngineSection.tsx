@@ -25,48 +25,20 @@ type PlanGroup = {
 
 const planGroups: PlanGroup[] = [
   {
-    label: 'Agents',
+    label: 'Runtime plans',
     icon: Users,
     plans: [
-      { name: 'Free Agent', price: 'Free', description: 'Core network access' },
-      { name: 'Verified Agent', price: 'PKR 500 / month', description: 'Identity and listing tools' },
-      { name: 'Professional Agent', price: 'PKR 1,000 / month', description: 'Lead and workflow controls' },
-      { name: 'Premium Agent', price: 'PKR 2,500 / month', description: 'Advanced intelligence and protection' },
-    ],
-  },
-  {
-    label: 'Agencies',
-    icon: Building2,
-    plans: [
-      { name: 'Starter Agency', price: 'PKR 5,000 / month', description: 'Team workspace and controls' },
-      { name: 'Professional Agency', price: 'PKR 10,000 / month', description: 'Agency-wide lead governance' },
-      { name: 'Enterprise Agency', price: 'PKR 25,000 / month', description: 'Multi-team operating layer' },
-    ],
-  },
-  {
-    label: 'Developers',
-    icon: Landmark,
-    plans: [
-      { name: 'Basic Developer', price: 'PKR 15,000 / month', description: 'Project and inventory workspace' },
-      { name: 'Professional Developer', price: 'PKR 30,000 / month', description: 'Escrow and progress intelligence' },
-      { name: 'Enterprise Developer', price: 'PKR 75,000 / month', description: 'Portfolio command center' },
-    ],
-  },
-  {
-    label: 'Investors',
-    icon: Activity,
-    plans: [
-      { name: 'Basic Investor', price: 'PKR 5,000 / month', description: 'Portfolio intelligence' },
-      { name: 'Professional Investor', price: 'PKR 15,000 / month', description: 'Market and property analysis' },
-      { name: 'Elite Investor', price: 'PKR 50,000 / month', description: 'Advanced portfolio reporting' },
+      { name: 'Starter', price: 'PKR 1,000 / month', description: 'Entitlements: DECISION REQUIRED' },
+      { name: 'Professional', price: 'PKR 5,000 / month', description: 'Entitlements: DECISION REQUIRED' },
+      { name: 'Enterprise', price: 'PKR 25,000 / month', description: 'Entitlements: DECISION REQUIRED' },
     ],
   },
 ];
 
 const revenuePillars = [
   { title: 'Listing Economy', detail: 'Basic, verified, premium, and featured listing services.', icon: Building },
-  { title: 'Lead Lock Economy', detail: 'Protected lead access with transparent time-based fees.', icon: Lock },
-  { title: 'Deal Lock Economy', detail: 'Transaction protection priced by the selected deal tier.', icon: ShieldCheck },
+  { title: 'Lead Lock Economy', detail: 'Canonical lock duration is 48 hours. Any fee and payment prerequisite are DECISION REQUIRED.', icon: Lock },
+  { title: 'Deal Lock Economy', detail: 'Canonical duration is 7 days initially, with a 15-day maximum total. Any fee and payment prerequisite are DECISION REQUIRED.', icon: ShieldCheck },
   { title: 'Verification Economy', detail: 'Owner, document, property, agent, and agency verification.', icon: ShieldCheck },
   { title: 'AI Services Economy', detail: 'Property analysis, market intelligence, and portfolio reports.', icon: Bot },
   { title: 'Enterprise AI Licensing', detail: 'Custom operating layers for developers, banks, agencies, and departments.', icon: Network },
@@ -104,10 +76,10 @@ export const RevenueEngineSection: React.FC = () => {
         <div className="mb-10 rounded-3xl border border-[#D4AF37]/30 bg-gradient-to-br from-[#D4AF37]/12 via-black/40 to-[#2DD4BF]/10 p-6 sm:p-8">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <span className="text-[10px] font-mono tracking-widest text-[#D4AF37]">PROPOSED PRICING MODEL</span>
+              <span className="text-[10px] font-mono tracking-widest text-[#D4AF37]">RUNTIME SUBSCRIPTION PRICES</span>
               <h3 className="mt-1 text-2xl font-bold text-white">Subscription economy</h3>
             </div>
-            <span className="rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] font-mono text-neutral-400">Monthly plans // subject to launch approval</span>
+            <span className="rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] font-mono text-neutral-400">Plan eligibility and entitlements: DECISION REQUIRED</span>
           </div>
 
           <div className="mb-6 flex flex-wrap gap-2">
@@ -126,7 +98,7 @@ export const RevenueEngineSection: React.FC = () => {
             })}
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {group.plans.map((plan, index) => (
               <div key={plan.name} className={`rounded-2xl border p-5 ${index === group.plans.length - 1 ? 'border-[#2DD4BF]/50 bg-[#2DD4BF]/10' : 'border-white/10 bg-black/45'}`}>
                 <div className="mb-8 flex items-start justify-between gap-3">
@@ -135,7 +107,7 @@ export const RevenueEngineSection: React.FC = () => {
                 </div>
                 <div className="text-lg font-extrabold text-[#D4AF37]">{plan.price}</div>
                 <p className="mt-2 text-xs leading-relaxed text-neutral-400">{plan.description}</p>
-                <div className="mt-5 flex items-center gap-1.5 text-[10px] font-mono text-emerald-300"><CheckCircle2 className="h-3.5 w-3.5" /> Scope defined</div>
+                <div className="mt-5 flex items-center gap-1.5 text-[10px] font-mono text-amber-300">Entitlements: DECISION REQUIRED</div>
               </div>
             ))}
           </div>

@@ -232,11 +232,51 @@ const PakistanMap3DScene: React.FC = () => {
 // ========================================================
 // HERO ANIMATION STAGE (DEDICATED RIGHT-HAND CONTAINER)
 // ========================================================
-export const HeroAnimationStage: React.FC = () => {
+interface HeroAnimationStageProps {
+  onOpen3DAnimation?: () => void;
+  onOpen16x9Hero?: () => void;
+}
+
+export const HeroAnimationStage: React.FC<HeroAnimationStageProps> = ({
+  onOpen3DAnimation,
+  onOpen16x9Hero,
+}) => {
   const [viewMode, setViewMode] = useState<'3D_MAP' | 'CITY_NETWORK'>('CITY_NETWORK');
 
   return (
-    <div className="relative w-full h-[580px] sm:h-[630px] rounded-3xl overflow-hidden glass-card-luxury border border-[#E5B842]/30 shadow-2xl bg-[#06080D]">
+    <div className="relative w-full h-[580px] sm:h-[630px] rounded-3xl overflow-visible glass-card-luxury border border-[#E5B842]/30 shadow-2xl bg-[#06080D]">
+      <div className="absolute -top-12 left-4 right-4 z-40 flex items-center justify-start pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          {onOpen16x9Hero && (
+            <button
+              onClick={() => {
+                soundEngine.playActivate();
+                onOpen16x9Hero();
+              }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-transparent border border-emerald-500/50 hover:border-emerald-400 text-emerald-400 text-[10px] sm:text-xs font-bold tracking-wide transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-lg shadow-emerald-500/10"
+              title="Launch 16:9 Website Hero Animation (18s Seamless Loop)"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>🎬 16:9 Hero Loop</span>
+            </button>
+          )}
+
+          {onOpen3DAnimation && (
+            <button
+              onClick={() => {
+                soundEngine.playActivate();
+                onOpen3DAnimation();
+              }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#E5B842]/20 via-[#E5B842]/10 to-transparent border border-[#E5B842]/50 hover:border-[#E5B842] text-[#E5B842] text-[10px] sm:text-xs font-bold tracking-wide transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-lg shadow-[#E5B842]/10"
+              title="Launch 3D Architectural Real-Estate Animation (Vertical 9:16)"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#E5B842] animate-ping" />
+              <span>📱 9:16 Social Reel</span>
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Top Stage Control Pill */}
       <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
         <div className="flex items-center gap-1.5 p-1 rounded-xl glass-pill bg-black/70 border border-white/10 text-[11px] font-mono">
@@ -268,9 +308,9 @@ export const HeroAnimationStage: React.FC = () => {
           </button>
         </div>
 
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] font-bold">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-          <span>130+ CITIES CONNECTED</span>
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-300" />
+          <span>SAMPLE VISUALIZATION — NOT LIVE INVENTORY</span>
         </div>
       </div>
 
@@ -289,10 +329,10 @@ export const HeroAnimationStage: React.FC = () => {
           <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between text-[11px] font-mono text-neutral-400 pointer-events-none">
             <div className="flex items-center gap-2">
               <span className="text-[#E5B842] font-bold">PAKISTAN PROPERTY GRAPH</span>
-              <span>// 5,000+ Mapped Areas</span>
+              <span>// Sample locations</span>
             </div>
             <div className="text-emerald-400 font-bold">
-              CADASTRAL SYNC ACTIVE
+              NO CADASTRAL DATA CONNECTION
             </div>
           </div>
         </div>
@@ -368,7 +408,7 @@ export const HeroAnimationStage: React.FC = () => {
             </div>
           </div>
 
-          {/* Floating Verified Agent Card (bottom-left clear zone) */}
+          {/* Floating sample profile card */}
           <div className="absolute bottom-[3%] left-[5%] z-20 hidden md:block">
             <div className="flex items-center gap-2 p-1.5 rounded-2xl glass-card-luxury border border-[#2DD4BF]/40 bg-black/90 shadow-2xl hover:scale-105 transition-transform">
               <div className="w-7 h-7 rounded-full bg-[#2DD4BF]/20 flex items-center justify-center text-[#2DD4BF] font-bold text-[10px]">
@@ -377,10 +417,10 @@ export const HeroAnimationStage: React.FC = () => {
               <div>
                 <div className="flex items-center gap-1 text-[11px] font-bold text-white">
                   <span>Ahmed Raza</span>
-                  <Check className="w-3 h-3 text-emerald-400" />
+                  <span className="rounded bg-amber-500/10 px-1 text-amber-300">DEMO</span>
                 </div>
                 <div className="text-[9px] text-neutral-400 font-mono">
-                  DHA Specialist • Verified Agent
+                  Sample profile • not verified
                 </div>
               </div>
             </div>
