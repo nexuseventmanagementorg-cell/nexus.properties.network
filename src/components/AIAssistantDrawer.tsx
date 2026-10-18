@@ -21,6 +21,8 @@ interface Message {
   agentName?: string;
 }
 
+type ModelConnectionStatus = 'not_checked' | 'connected' | 'not_configured' | 'unavailable';
+
 type ConversationDomain = 'property' | 'lead' | 'deal' | 'verification' | 'payments' | 'crm' | 'subscriptions' | 'marketplace' | 'faq';
 
 const detectConversationDomain = (query: string): ConversationDomain => {
@@ -153,6 +155,8 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
   const [ttsEnabled, setTtsEnabled] = useState(true);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [routingDecision, setRoutingDecision] = useState<RoutingDecision | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
+  const [modelConnectionStatus, setModelConnectionStatus] = useState<ModelConnectionStatus>('not_checked');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -384,12 +388,12 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           : 'This request cannot be processed without verified Nexus records. I will not guess or fabricate information.';
       } else if (decision.level === 'SUPER_ADMIN') {
         reply = lang === 'roman_ur'
-          ? 'Aapki request Super Admin human review ke liye escalate ki ja rahi hai. Final decision authorized human review ke baad issue hoga.'
-          : 'Your request is being escalated to Super Admin for authorized human review. No autonomous final decision will be made.';
+          ? 'Is request ke liye authorized human review zaroori hai. Is preview mein escalation service connected nahi, is liye main ise escalate hone ka dawa nahi kar sakti.'
+          : 'This request requires authorized human review. Escalation is not connected in this preview, so I cannot claim it has been submitted.';
       } else if (decision.level === 'AI_ADMIN') {
           reply = lang === 'roman_ur'
-          ? 'AI Admin activate ho gaya hai. Is request ko investigation workflow me route kiya ja raha hai aur audit record maintain kiya jayega.'
-          : 'AI Admin has been activated. This request is being routed to an investigation workflow and an audit record will be maintained.';
+          ? 'Yeh security ya ownership review mangta hai. Investigation aur audit services connected nahi hain; final faislay ke liye authorized admin se rabta karein.'
+          : 'This requires a security or ownership review. Investigation and audit services are not connected; please contact an authorized administrator.';
       } else {
         const propertyReply = isPropertyTurn && (currentIntent.city || currentIntent.area) ? await buildPropertyReply(userText, lang, shouldGreet, currentIntent) : null;
 
@@ -414,6 +418,42 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           }
         }
 
+        if (!reply) {
+          try {
+            const conversation = [
+              ...messages.map((message) => ({
+                role: message.sender === 'user' ? 'user' as const : 'model' as const,
+                text: message.text,
+              })),
+              { role: 'user' as const, text: userText },
+            ].slice(-12);
+            const response = await fetch('/api/ai/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                messages: conversation,
+                language: lang,
+                agentName: activeAgent.name,
+                sourceContext: isPropertyTurn
+                  ? `Parsed property intent only; this is not verified inventory: ${JSON.stringify(currentIntent)}`
+                  : undefined,
+              }),
+              signal: AbortSignal.timeout(24000),
+            });
+            const result = await response.json() as { reply?: string; code?: string };
+            if (response.ok && typeof result.reply === 'string' && result.reply.trim()) {
+              reply = result.reply.trim();
+              setModelConnectionStatus('connected');
+            } else if (result.code === 'AI_NOT_CONFIGURED') {
+              setModelConnectionStatus('not_configured');
+            } else {
+              setModelConnectionStatus('unavailable');
+            }
+          } catch {
+            setModelConnectionStatus('unavailable');
+          }
+        }
+
         if (!reply && lang === 'en') {
           if (lower.includes('lead lock') || lower.includes('theft') || lower.includes('poach')) {
           reply = `The canonical Lead Lock duration is 48 hours, but production lock enforcement is not implemented. Eligibility, fees, payment prerequisites, release authority, and extensions remain DECISION REQUIRED.`;
@@ -424,7 +464,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           } else if (lower.includes('islamabad') || lower.includes('f-7') || lower.includes('blue area')) {
           reply = `I do not have authoritative live inventory or valuation data for Islamabad. Deal Lock is not an escrow service, and its production enforcement is not implemented.`;
           } else {
-          reply = `This is a scripted preview of the ${activeAgent.name} registry role. It has no verified live telemetry or connected production workflow.`;
+          reply = `The language model is not connected, so this is a local preview of the ${activeAgent.name} role. No live property, verification, or workflow service is connected.`;
           }
         } else if (!reply && lang === 'ur') {
           if (lower.includes('lead') || lower.includes('لیڈ') || lower.includes('چوری')) {
@@ -432,7 +472,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           } else if (lower.includes('لاہور') || lower.includes('lahore') || lower.includes('ڈی ایچ اے')) {
           reply = `میرے پاس براہ راست مستند inventory یا verification data موجود نہیں۔ براہ کرم شہر، علاقہ، بجٹ اور پراپرٹی کی قسم بتائیں؛ sample records کو verified listing نہ سمجھیں۔`;
           } else {
-          reply = `یہ Nexus AI Workforce Registry کے کردار کا scripted preview ہے، فعال production agent نہیں۔ براہ راست data یا workflow integration قائم نہیں ہے۔`;
+          reply = `Language model connect nahi hai, is liye yeh ${activeAgent.name} role ka local preview hai. Live property, verification ya workflow service connected nahi.`;
           }
         } else if (!reply) {
           if (lower.includes('lead') || lower.includes('chori') || lower.includes('poach')) {
@@ -440,7 +480,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
           } else if (lower.includes('plot') || lower.includes('lahore') || lower.includes('dha') || lower.includes('karachi')) {
           reply = `Is waqt mujhe authoritative live inventory data available nahin hai. Aap city, area, budget, aur property type batayen; sample data ko verified listing nahin samjha jayega.`;
           } else {
-          reply = `Aapka sawal confirm ho gaya hai. Nexus AI Workforce Registry mein 54 assistant entries hain; yeh 54 deployed production agents ya 24/7 service ka saboot nahin. Live integrations aur service availability abhi establish nahin hain.`;
+          reply = `Aapka sawal samajh aaya. Language model abhi connect nahi, is liye main sirf local preview guidance de sakti hoon. Live property, verification ya workflow integration available hone ka dawa nahi karungi.`;
           }
         }
       }
@@ -467,8 +507,10 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         }
       ]);
 
+      setIsThinking(false);
       speakText(userFacingReply);
     }, 600);
+    setIsThinking(true);
   };
 
   const quickPrompts = [
@@ -493,9 +535,17 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-white tracking-wide">Nexus Property Advisor</h3>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className={`w-2 h-2 rounded-full ${modelConnectionStatus === 'connected' ? 'bg-emerald-400 animate-ping' : modelConnectionStatus === 'unavailable' ? 'bg-red-400' : 'bg-amber-300'}`} />
               </div>
-              <p className="text-[10px] font-mono text-[#D4AF37]">Property guidance and support</p>
+              <p className="text-[10px] font-mono text-[#D4AF37]">
+                {modelConnectionStatus === 'connected'
+                  ? 'Model connected · property records remain unverified'
+                  : modelConnectionStatus === 'not_configured'
+                    ? 'Local preview · model key not configured'
+                    : modelConnectionStatus === 'unavailable'
+                      ? 'Local preview · model unavailable'
+                      : 'Property guidance · model status unverified'}
+              </p>
             </div>
           </div>
 
@@ -584,6 +634,12 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
               </span>
             </div>
           ))}
+          {isThinking && (
+            <div className="flex items-center gap-2 text-[10px] text-neutral-400" role="status" aria-live="polite">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#D4AF37]" />
+              Preparing a grounded response...
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
@@ -639,7 +695,9 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
             {/* Send Button */}
             <button
               type="submit"
-              className="p-3 rounded-xl bg-[#D4AF37] hover:bg-[#F3CF57] text-black font-bold transition-all cursor-pointer"
+              disabled={isThinking}
+              aria-label={isThinking ? 'Preparing reply' : 'Send message'}
+              className="p-3 rounded-xl bg-[#D4AF37] hover:bg-[#F3CF57] text-black font-bold transition-all cursor-pointer disabled:cursor-wait disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
             </button>

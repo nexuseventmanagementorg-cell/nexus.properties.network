@@ -63,7 +63,7 @@ The preview preserves the Phase 0 canonical values in [NEXUS_CANONICAL_BUSINESS_
 | Pricing/subscriptions/payments | FRONTEND PARTIAL | Documented values and unavailable states; no checkout, provider callback, invoice, subscription activation, or entitlement enforcement. |
 | Verification | NOT IMPLEMENTED as a service | Explicit disconnected state; no identity, ownership, cadastral, document, or government check. |
 | Messaging/notifications/CRM | NOT IMPLEMENTED as connected workflows | Explicit disconnected states; no durable records, delivery, shared history, or integration. |
-| AI | FRONTEND PREVIEW ONLY | Existing assistant UI is scripted; registry entries are not deployed agents, and no model-backed service is connected. |
+| AI | SERVER GATEWAY IMPLEMENTED; PROVIDER NOT CONFIGURED | The assistant can call a server-only Gemini gateway when `NEXUS_GEMINI_API_KEY` is configured. Without it, the UI reports local-preview mode. The 54 registry entries are not separate deployed agents; no authoritative live-property, verification, payment, lock, or CRM service is connected. |
 | Admin audit/AI operations | NOT IMPLEMENTED as production consoles | Existing protected dashboard route takes precedence; no immutable audit log or administrative action service is connected. |
 | Backend/API/database/RLS | BACKEND REQUIRED | Typed adapter contracts do not connect repositories, Supabase, or server endpoints. |
 
@@ -74,7 +74,7 @@ The preview preserves the Phase 0 canonical values in [NEXUS_CANONICAL_BUSINESS_
 3. Implement shared property catalog and seller submission/review lifecycle with source/provenance and evidence.
 4. Implement auditable Lead and Deal records and server-enforced lock lifecycle only after unresolved policy decisions are approved.
 5. Implement verification provider/reviewer workflows, payment reconciliation, subscription entitlements, messaging, notifications, and CRM only with their required backend integrations.
-6. Add route-level and interaction tests, responsive/accessibility checks, and production integration verification.
+6. Configure and monitor the model provider, add model-backed multilingual golden-answer evaluation, connect approved property records, and complete production security/privacy review before enabling public model traffic.
 
 ## Validation
 
@@ -84,7 +84,10 @@ The preview preserves the Phase 0 canonical values in [NEXUS_CANONICAL_BUSINESS_
 - Browser smoke check confirmed `/deal-lock` renders the canonical 7-day/15-day policy and states that production enforcement is not connected.
 - `npm run lint` exits successfully but reports repository warnings.
 - `git diff --check` completed with no whitespace errors.
-- `npm run build` **fails** during TypeScript checking on existing project errors outside the new preview implementation. The latest run reports errors involving missing `lucide-react` exports in the existing animation/dashboard modules, `NodeJS` namespace typing, dashboard/inventory model mismatches, repository callback implicit types, service/model contract mismatches, and `propertyIntentParser`'s missing `confidence`. No errors in `ProductExperiencePage.tsx`, `ProductPrimitives.tsx`, `appRoutes.ts`, `AppLink.tsx`, `PropertyDiscoverySection.tsx`, or `frontendContracts.ts` were reported by that run.
+- `npm run build` now passes with the AI gateway and public-project showcase included; the existing large-bundle warning remains.
+- `npm test` passes five mocked-provider tests covering no-key behavior, input validation, server-only key use, safety instructions, provider errors, and same-origin/method checks.
+- `npm audit` reports no known vulnerabilities after the compatible `source-map-js` patch update.
+- Local `POST /api/ai/chat` without a server key returns `503 AI_NOT_CONFIGURED`; no model call or fabricated answer is made.
 
 ## Important limitation
 
