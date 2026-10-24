@@ -1,4 +1,5 @@
 import { readStore, writeStore } from '../../services/storageAdapter';
+import { assertUuid, createUuid } from '../../services/uuid';
 import { isSupabaseConfigured, supabaseClient } from '../../services/supabaseClient';
 import type { BaseRecord } from '../schemas/models';
 
@@ -28,6 +29,17 @@ const mapInput = (value: Record<string, unknown>) => {
   return mapped;
 };
 
+const validateUuidReferences = (value: Record<string, unknown>) => {
+  Object.entries(value).forEach(([field, reference]) => {
+    if (field === 'auditId' || reference === undefined || reference === null) return;
+    if (/Id$/.test(field)) assertUuid(reference, field);
+    if (/Ids$/.test(field)) {
+      if (!Array.isArray(reference)) throw new Error(`${field} must contain UUID values.`);
+      reference.forEach((id) => assertUuid(id, field));
+    }
+  });
+};
+
 export class BaseRepository<T extends BaseRecord> {
   constructor(protected readonly storageKey: string) {}
 
@@ -37,6 +49,10 @@ export class BaseRepository<T extends BaseRecord> {
 
   protected getTableName() {
     return this.storageKey.replace(/^nexus_db_/, '');
+  }
+
+  protected mapDatabaseInput(value: Record<string, unknown>) {
+    return mapInput(value);
   }
 
   async findAll(): Promise<T[]> {
@@ -51,6 +67,7 @@ export class BaseRepository<T extends BaseRecord> {
 
   async findById(id: string): Promise<T | undefined> {
     if (isSupabaseConfigured) {
+      assertUuid(id, 'id');
       const { data, error } = await supabaseClient.from(this.getTableName()).select('*').eq('id', id).maybeSingle();
       if (error) throw error;
       return data ? this.mapDatabaseRow(data) : undefined;
@@ -61,6 +78,7 @@ export class BaseRepository<T extends BaseRecord> {
 
   async findByOwner(ownerId: string): Promise<T[]> {
     if (isSupabaseConfigured) {
+      assertUuid(ownerId, 'ownerId');
       const { data, error } = await supabaseClient.from(this.getTableName()).select('*').eq('owner_id', ownerId);
       if (error) throw error;
       return (data || []).map((row: unknown) => this.mapDatabaseRow(row));
@@ -71,10 +89,17 @@ export class BaseRepository<T extends BaseRecord> {
 
   async save(input: Omit<T, 'id' | 'createdAt' | 'updatedAt' | 'auditId'> & Partial<Pick<T, 'id' | 'createdAt' | 'updatedAt' | 'auditId'>>): Promise<T> {
     const now = new Date().toISOString();
-    const record = { ...input, id: input.id || `${this.getTableName()}-${Date.now()}`, createdAt: input.createdAt || now, updatedAt: now, auditId: input.auditId || `AUD-${Date.now()}` } as T;
+    const id = isSupabaseConfigured
+      ? input.id === undefined ? createUuid() : input.id
+      : input.id || createUuid();
+    if (isSupabaseConfigured) {
+      assertUuid(id, 'id');
+      validateUuidReferences(input as Record<string, unknown>);
+    }
+    const record = { ...input, id, createdAt: input.createdAt || now, updatedAt: now, auditId: input.auditId || `AUD-${Date.now()}` } as T;
 
     if (isSupabaseConfigured) {
-      const { data, error } = await supabaseClient.from(this.getTableName()).insert(mapInput(record as Record<string, unknown>)).select('*').single();
+      const { data, error } = await supabaseClient.from(this.getTableName()).insert(this.mapDatabaseInput(record as Record<string, unknown>)).select('*').single();
       if (error) throw error;
       return this.mapDatabaseRow(data);
     }
@@ -85,13 +110,17 @@ export class BaseRepository<T extends BaseRecord> {
   }
 
   async update(id: string, patch: Partial<T>): Promise<T | undefined> {
+    if (isSupabaseConfigured) {
+      assertUuid(id, 'id');
+      validateUuidReferences(patch as Record<string, unknown>);
+    }
     const current = await this.findById(id);
     if (!current) return undefined;
 
     const updated = { ...current, ...patch, id, updatedAt: new Date().toISOString() } as T;
 
     if (isSupabaseConfigured) {
-      const { data, error } = await supabaseClient.from(this.getTableName()).update(mapInput(updated as Record<string, unknown>)).eq('id', id).select('*').single();
+      const { data, error } = await supabaseClient.from(this.getTableName()).update(this.mapDatabaseInput({ ...patch, id: undefined, updatedAt: updated.updatedAt } as Record<string, unknown>)).eq('id', id).select('*').single();
       if (error) throw error;
       return this.mapDatabaseRow(data);
     }
@@ -104,6 +133,7 @@ export class BaseRepository<T extends BaseRecord> {
 
   async delete(id: string): Promise<void> {
     if (isSupabaseConfigured) {
+      assertUuid(id, 'id');
       const { error } = await supabaseClient.from(this.getTableName()).delete().eq('id', id);
       if (error) throw error;
       return;

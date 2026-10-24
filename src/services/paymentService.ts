@@ -3,6 +3,7 @@ import { invoiceRepository } from '../database/repositories/InvoiceRepository';
 import type { Payment } from '../database/schemas/models';
 import { generateInvoice, InvoiceType } from './invoiceService';
 import { activateSubscription, createSubscription, subscriptionPlans, SubscriptionPlan } from './subscriptionService';
+import { createUuid } from './uuid';
 
 export type PaymentProvider = 'JazzCash' | 'Easypaisa' | 'Bank Transfer';
 export type PaymentFlowType = 'subscription' | 'lead-lock' | 'deal-lock' | 'premium-listing';
@@ -83,7 +84,7 @@ export const PAYMENT_PROVIDERS: PaymentProvider[] = ['JazzCash', 'Easypaisa', 'B
 
 export const createPayment = async (input: CreatePaymentInput): Promise<Payment & { checkoutUrl?: string }> => {
   const now = new Date().toISOString();
-  const paymentId = `PAY-${Date.now()}`;
+  const paymentId = createUuid();
   const reference = input.reference || `REF-${Date.now()}`;
   const gateway = input.provider === 'Bank Transfer' ? undefined : paymentGateways[input.provider];
   const gatewayResponse = gateway ? await gateway.createPayment({ paymentId, amount: input.amount, currency: input.currency || 'PKR', reference, callbackUrl: getEnv('VITE_PAYMENT_CALLBACK_URL') || undefined }) : undefined;

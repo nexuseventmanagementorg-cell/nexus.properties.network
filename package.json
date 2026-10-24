@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "node --import tsx --test tests/ai-chat.test.ts tests/agent-orchestration.test.ts"
+    "test": "node --import tsx --test tests/ai-chat.test.ts tests/agent-orchestration.test.ts tests/supabase-foundation.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",

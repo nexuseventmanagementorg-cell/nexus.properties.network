@@ -1,5 +1,6 @@
 import { subscriptionRepository } from '../database/repositories/SubscriptionRepository';
 import type { Subscription } from '../database/schemas/models';
+import { createUuid } from './uuid';
 
 export type SubscriptionPlan = 'Starter' | 'Professional' | 'Enterprise';
 export type SubscriptionLifecycle = 'Pending' | 'Active' | 'Expired' | 'Cancelled';
@@ -13,7 +14,7 @@ export const subscriptionPlans: Record<SubscriptionPlan, number> = {
 export const createSubscription = async (ownerId: string, plan: SubscriptionPlan, provider = 'JazzCash'): Promise<Subscription> => {
   const now = new Date().toISOString();
   return subscriptionRepository.save({
-    id: `SUB-${Date.now()}`,
+    id: createUuid(),
     ownerId,
     plan,
     billingCycle: 'monthly',

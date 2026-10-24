@@ -51,7 +51,9 @@ import { RoleDashboardPage } from './components/RoleDashboardPage';
 import { ProductExperiencePage } from './components/ProductExperiencePage';
 import { ProductNotFoundPage } from './components/ProductExperiencePage';
 import { PlatformRole } from './services/platformStore';
-import { canAccessRole, getCurrentUser } from './services/authService';
+import { canAccessRole, getCurrentUser, hydrateSession } from './services/authService';
+import { isSupabaseConfigured } from './services/supabaseClient';
+import type { UserRecord } from './services/models';
 import { LanguageMode, PropertyItem } from './types';
 import { SAMPLE_CITIES } from './data/sampleCities';
 import { createProperty } from './services/propertyService';
@@ -570,6 +572,11 @@ export default function App() {
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  const currentUser = getCurrentUser();
+                  if (isSupabaseConfigured && !currentUser) {
+                    navigateApp(APP_PATHS.register);
+                    return;
+                  }
                   soundEngine.playLock();
                   const formData = new FormData(e.currentTarget);
                   const city = String(formData.get('city') || 'Lahore');
@@ -592,7 +599,7 @@ export default function App() {
                     image: '/images/media_1790111327854.png',
                     agent: 'Nexus Seller Submission',
                     galleryImages: [],
-                  });
+                  }, currentUser?.id);
                   setFormSubmitted(true);
                 }}
                 className="space-y-4 text-xs font-mono"
@@ -776,13 +783,34 @@ export default function App() {
 }
 
 const ProtectedDashboardRoute: React.FC<{ role: PlatformRole }> = ({ role }) => {
-  const user = getCurrentUser();
-  useEffect(() => {
-    if (!canAccessRole(user, role)) {
-      navigateApp(APP_PATHS.login, true);
-    }
-  }, [role, user?.id, user?.role]);
+  const [user, setUser] = useState<UserRecord | null>(() => isSupabaseConfigured ? null : getCurrentUser());
+  const [checkingSession, setCheckingSession] = useState(isSupabaseConfigured);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured) {
+      if (!canAccessRole(getCurrentUser(), role)) navigateApp(APP_PATHS.login, true);
+      return;
+    }
+
+    let active = true;
+    hydrateSession().then((sessionUser) => {
+      if (!active) return;
+      setUser(sessionUser);
+      setCheckingSession(false);
+      if (!canAccessRole(sessionUser, role)) navigateApp(APP_PATHS.login, true);
+    }).catch((error: unknown) => {
+      if (!active) return;
+      console.error('Dashboard session verification failed.', error);
+      setUser(null);
+      setCheckingSession(false);
+      navigateApp(APP_PATHS.login, true);
+    });
+    return () => { active = false; };
+  }, [role]);
+
+  if (checkingSession) {
+    return <main className="min-h-screen bg-[#06080D] p-8 text-white" role="status">Verifying your secure session...</main>;
+  }
   if (!user || !canAccessRole(user, role)) return <AuthPage mode="login" />;
   return <RoleDashboardPage role={role} />;
 };

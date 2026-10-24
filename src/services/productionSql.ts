@@ -1,3 +1,4 @@
+/** @deprecated Legacy schema sketch only; do not apply. Use the reviewed numbered migrations. */
 export const productionSql = {
   users: `CREATE TABLE IF NOT EXISTS users (id UUID PRIMARY KEY, email TEXT UNIQUE NOT NULL, full_name TEXT, role TEXT, status TEXT DEFAULT 'active', created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());`,
   properties: `CREATE TABLE IF NOT EXISTS properties (id UUID PRIMARY KEY, owner_id UUID, title TEXT, city TEXT, area TEXT, phase TEXT, property_type TEXT, price NUMERIC, status TEXT DEFAULT 'active', cover_image_url TEXT, gallery_urls JSONB DEFAULT '[]'::jsonb, created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());`,

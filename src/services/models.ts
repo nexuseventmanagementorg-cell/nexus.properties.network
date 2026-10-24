@@ -11,7 +11,7 @@ export interface UserRecord {
   createdAt: string;
   updatedAt: string;
   lastLogin: string;
-  status: 'active' | 'suspended';
+  status: 'pending_verification' | 'active' | 'suspended';
 }
 
 export type PropertyRecord = LiveProperty & BaseRecord;

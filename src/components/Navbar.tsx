@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from 'lucide-react';
 import { soundEngine } from '../utils/sound';
 import { LanguageMode } from '../types';
@@ -6,7 +6,7 @@ import transparentLogo from '../assets/transparentlogo.png';
 import { getCopy } from '../i18n';
 import { AppLink } from '../routing/AppLink';
 import { APPLICATION_NAVIGATION, APP_PATHS, routeForRole } from '../routing/appRoutes';
-import { getCurrentUser } from '../services/authService';
+import { authStateChangedEvent, getCurrentUser } from '../services/authService';
 
 interface NavbarProps {
   lang: LanguageMode;
@@ -21,8 +21,14 @@ const routeIsActive = (currentPath: string, href: string) =>
 
 export const Navbar: React.FC<NavbarProps> = ({ lang, setLang, currentPath }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const user = getCurrentUser();
+  const [user, setUser] = useState(getCurrentUser);
   const accountPath = user ? routeForRole(user.role) : APP_PATHS.login;
+
+  useEffect(() => {
+    const syncUser = () => setUser(getCurrentUser());
+    window.addEventListener(authStateChangedEvent, syncUser);
+    return () => window.removeEventListener(authStateChangedEvent, syncUser);
+  }, []);
 
   const onNavigation = () => {
     soundEngine.playClick();

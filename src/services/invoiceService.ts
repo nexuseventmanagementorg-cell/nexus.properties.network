@@ -1,12 +1,13 @@
 import { invoiceRepository } from '../database/repositories/InvoiceRepository';
 import type { Invoice } from '../database/schemas/models';
+import { createUuid } from './uuid';
 
 export type InvoiceType = 'Subscription Invoice' | 'Lead Lock Invoice' | 'Deal Lock Invoice' | 'Premium Listing Invoice';
 
 export const generateInvoice = async (input: { ownerId: string; amount: number; type: InvoiceType; reference?: string; status?: Invoice['status']; }): Promise<Invoice> => {
   const now = new Date().toISOString();
   return invoiceRepository.save({
-    id: `INV-${Date.now()}`,
+    id: createUuid(),
     ownerId: input.ownerId,
     amount: input.amount,
     currency: 'PKR',

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { SAMPLE_PROPERTIES, SampleProperty, SamplePropertyType } from '../data/sampleProperties';
+import { SAMPLE_AREAS } from '../data/sampleAreas';
+import { SAMPLE_CITIES } from '../data/sampleCities';
 import { AI_EMPLOYEES } from '../data/nexusData';
 import { NexusPageShell, NexusProvenanceBadge, NexusStatePanel } from './product/ProductPrimitives';
 import { AppLink } from '../routing/AppLink';
@@ -8,6 +10,17 @@ import { APP_PATHS, propertyDetailPath, type ProductRoutePath } from '../routing
 const cardClass = 'rounded-2xl border border-white/10 bg-white/[0.03] p-5';
 const inputClass = 'w-full rounded-xl border border-white/10 bg-black/40 px-3.5 py-3 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-[#D4AF37]';
 const formatPrice = (price: string) => price || 'Information not available.';
+const suggestedAskingPrices = [
+  'PKR 10 lakh',
+  'PKR 25 lakh',
+  'PKR 50 lakh',
+  'PKR 75 lakh',
+  'PKR 1 crore',
+  'PKR 2 crore',
+  'PKR 5 crore',
+  'PKR 10 crore',
+  'PKR 25 crore',
+];
 
 const PropertyCard: React.FC<{ property: SampleProperty }> = ({ property }) => (
   <AppLink to={propertyDetailPath(property.propertyId)} className={`${cardClass} block transition hover:border-[#D4AF37]/50`}>
@@ -94,9 +107,13 @@ const ListingWizard: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
   const [draft, setDraft] = useState({ purpose: '', propertyType: '', city: '', area: '', size: '', price: '', description: '' });
+  const [customCity, setCustomCity] = useState(false);
+  const [customArea, setCustomArea] = useState(false);
+  const [customPrice, setCustomPrice] = useState(false);
   const steps = ['Purpose', 'Property type', 'Location', 'Details and price', 'Description', 'Review', 'Submit'];
   const update = (key: keyof typeof draft, value: string) => setDraft((current) => ({ ...current, [key]: value }));
   const field = (key: keyof typeof draft, label: string, placeholder: string, required = false) => <label className="block text-sm text-neutral-300">{label}{required && <span aria-hidden="true" className="ml-1 text-amber-300">*</span>}<input required={required} aria-invalid={Boolean(validationMessage && required && !draft[key].trim())} className={`${inputClass} mt-2`} type="text" value={draft[key]} onChange={(event) => { update(key, event.target.value); setValidationMessage(''); }} placeholder={placeholder} /></label>;
+  const cityAreas = SAMPLE_AREAS.filter((area) => area.city === draft.city);
   const advanceStep = () => {
     const requiredFields: Partial<Record<number, Array<keyof typeof draft>>> = {
       0: ['purpose'],
@@ -122,8 +139,55 @@ const ListingWizard: React.FC = () => {
           <div className="space-y-4">
             {step === 0 && <label className="block text-sm text-neutral-300">Purpose <span aria-hidden="true" className="text-amber-300">*</span><select required aria-invalid={Boolean(validationMessage && !draft.purpose)} className={`${inputClass} mt-2`} value={draft.purpose} onChange={(event) => { update('purpose', event.target.value); setValidationMessage(''); }}><option value="">Choose purpose</option>{['For sale', 'For rent', 'Investment'].map((value) => <option key={value}>{value}</option>)}</select></label>}
             {step === 1 && <label className="block text-sm text-neutral-300">Property type <span aria-hidden="true" className="text-amber-300">*</span><select required aria-invalid={Boolean(validationMessage && !draft.propertyType)} className={`${inputClass} mt-2`} value={draft.propertyType} onChange={(event) => { update('propertyType', event.target.value); setValidationMessage(''); }}><option value="">Choose type</option>{(['House', 'Plot', 'Commercial', 'Apartment', 'Investment', 'Farm House', 'Building', 'Shop', 'Office'] as SamplePropertyType[]).map((value) => <option key={value}>{value}</option>)}</select></label>}
-            {step === 2 && <div className="grid gap-4 sm:grid-cols-2">{field('city', 'City', 'City', true)}{field('area', 'Area', 'Area', true)}</div>}
-            {step === 3 && <div className="grid gap-4 sm:grid-cols-2">{field('size', 'Area / size', 'e.g. 10 marla', true)}{field('price', 'Asking price', 'Information if known')}<p className="text-xs text-neutral-500 sm:col-span-2">Price remains user-entered and unverified. Missing values are not inferred.</p></div>}
+            {step === 2 && <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block text-sm text-neutral-300">City <span aria-hidden="true" className="ml-1 text-amber-300">*</span>
+                <select required aria-invalid={Boolean(validationMessage && !draft.city.trim())} className={`${inputClass} mt-2`} value={customCity ? '__custom__' : draft.city} onChange={(event) => {
+                  const isCustom = event.target.value === '__custom__';
+                  setCustomCity(isCustom);
+                  setCustomArea(isCustom);
+                  update('city', isCustom ? '' : event.target.value);
+                  update('area', '');
+                  setValidationMessage('');
+                }}>
+                  <option value="">Choose a city</option>
+                  {SAMPLE_CITIES.map((city) => <option key={city.cityId} value={city.city}>{city.city}</option>)}
+                  <option value="__custom__">Other city</option>
+                </select>
+                <span className="mt-1 block text-xs text-neutral-500">Suggestions only. Choose Other city if yours is not listed.</span>
+              </label>
+              {customCity
+                ? field('city', 'Enter city', 'Type city name', true)
+                : <label className="block text-sm text-neutral-300">Area <span aria-hidden="true" className="ml-1 text-amber-300">*</span>
+                  <select required disabled={!draft.city} aria-invalid={Boolean(validationMessage && !draft.area.trim())} className={`${inputClass} mt-2 disabled:opacity-50`} value={customArea ? '__custom__' : draft.area} onChange={(event) => {
+                    const isCustom = event.target.value === '__custom__';
+                    setCustomArea(isCustom);
+                    update('area', isCustom ? '' : event.target.value);
+                    setValidationMessage('');
+                  }}>
+                    <option value="">{draft.city ? 'Choose an area' : 'Choose a city first'}</option>
+                    {cityAreas.map((area) => <option key={area.areaId} value={area.name}>{area.name}</option>)}
+                    {draft.city && <option value="__custom__">Other area</option>}
+                  </select>
+                  <span className="mt-1 block text-xs text-neutral-500">Area suggestions are for guidance; use Other area if needed.</span>
+                </label>}
+              {customArea && <div className="sm:col-span-2">{field('area', 'Enter area', 'Type area, neighborhood, or locality', true)}</div>}
+            </div>}
+            {step === 3 && <div className="grid gap-4 sm:grid-cols-2">
+              {field('size', 'Area / size', 'e.g. 10 marla', true)}
+              <label className="block text-sm text-neutral-300">Asking price (PKR)
+                <select className={`${inputClass} mt-2`} value={customPrice ? '__custom__' : draft.price} onChange={(event) => {
+                  const isCustom = event.target.value === '__custom__';
+                  setCustomPrice(isCustom);
+                  update('price', isCustom ? '' : event.target.value);
+                }}>
+                  <option value="">Choose a suggested price (optional)</option>
+                  {suggestedAskingPrices.map((price) => <option key={price} value={price}>{price}</option>)}
+                  <option value="__custom__">Enter a different price</option>
+                </select>
+                {customPrice && <input aria-label="Custom asking price in PKR" className={`${inputClass} mt-2`} type="text" value={draft.price} onChange={(event) => update('price', event.target.value)} placeholder="e.g. 5 crore" />}
+              </label>
+              <p className="text-xs text-neutral-500 sm:col-span-2">Suggested amounts are convenience options only. Price remains user-entered and unverified; choose a custom value or leave blank if unsure.</p>
+            </div>}
             {step === 4 && <label className="block text-sm text-neutral-300">Description<textarea className={`${inputClass} mt-2 min-h-32`} value={draft.description} onChange={(event) => update('description', event.target.value)} placeholder="Describe the property. Avoid sensitive personal information." /></label>}
             {step === 5 && <div className="space-y-3 text-sm">{Object.entries(draft).map(([key, value]) => <p key={key}><span className="capitalize text-neutral-500">{key.replace(/([A-Z])/g, ' $1')}: </span>{value || 'Information not available.'}</p>)}<NexusProvenanceBadge value="DRAFT" /></div>}
             {step === 6 && <NexusStatePanel title="Submission requires a connected backend" detail="The listing is not approved or published by this preview. Final submission is disabled until persistent storage and review workflows exist." state="NOT CONNECTED" />}

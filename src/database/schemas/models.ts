@@ -2,8 +2,41 @@ export type Role = 'Buyer' | 'Seller' | 'Agent' | 'Agency' | 'Developer' | 'Inve
 export type EntityStatus = 'active' | 'inactive' | 'pending' | 'archived' | 'suspended';
 
 export interface BaseRecord { id: string; createdAt: string; updatedAt: string; ownerId: string; status: string; auditId: string; }
-export interface User extends BaseRecord { fullName: string; email: string; role: Role; verificationStatus: string; }
-export interface Property extends BaseRecord { title: string; city: string; area: string; phase: string; propertyType: string; price: number; verificationStatus: string; }
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: Role;
+  status: 'pending_verification' | 'active' | 'suspended';
+  createdAt: string;
+  updatedAt: string;
+  lastLogin?: string;
+}
+export interface Property extends BaseRecord {
+  propertyId: string;
+  title: string;
+  propertyType: string;
+  city: string;
+  province?: string;
+  cityId?: string;
+  area: string;
+  areaId?: string;
+  phase: string;
+  price: string;
+  priceRaw: number;
+  areaSize: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  propertyStatus: string;
+  purpose: 'Residential' | 'Commercial' | 'Investment';
+  description: string;
+  image: string;
+  galleryImages?: string[];
+  features: string[];
+  agent: string;
+  verificationStatus: string;
+  state: 'LIVE PROPERTY' | 'ARCHIVED PROPERTY';
+}
 export interface Lead extends BaseRecord { propertyId: string; assignedTo: string; status: string; source: string; }
 export interface Deal extends BaseRecord { propertyId: string; assignedTo: string; status: string; amount?: number; }
 export interface Notification extends BaseRecord { recipientId: string; type: 'success' | 'warning' | 'error' | 'system' | 'ai-alert'; title: string; message: string; read: boolean; }

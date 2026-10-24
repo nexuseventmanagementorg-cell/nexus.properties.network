@@ -53,7 +53,7 @@ export const RoleDashboardPage: React.FC<{ role: PlatformRole }> = ({ role }) =>
   }, []);
 
   const goHome = () => navigateApp(APP_PATHS.home);
-  const logout = () => { logoutUser(); goHome(); };
+  const logout = async () => { await logoutUser(); goHome(); };
   const readImage = (file: File, callback: (value: string) => void) => { const reader = new FileReader(); reader.onload = () => callback(String(reader.result)); reader.readAsDataURL(file); };
 
   const submitProperty = async (event: React.FormEvent<HTMLFormElement>) => {

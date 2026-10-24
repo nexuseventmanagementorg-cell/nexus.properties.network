@@ -3,13 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 export interface SupabaseConfig {
   url: string;
   anonKey: string;
-  serviceRoleKey?: string;
   storageBucket?: string;
 }
 
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const serviceRoleKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
 const storageBucket = import.meta.env.VITE_STORAGE_BUCKET || 'property-images';
 
 export const isSupabaseConfigured = Boolean(url && anonKey);
@@ -17,7 +15,6 @@ export const isSupabaseConfigured = Boolean(url && anonKey);
 export const supabaseConfig: SupabaseConfig = {
   url,
   anonKey,
-  serviceRoleKey,
   storageBucket,
 };
 

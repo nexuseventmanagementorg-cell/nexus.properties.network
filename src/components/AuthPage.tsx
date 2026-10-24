@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, Fingerprint, Lock, ShieldCheck, User } from 'lucide-react';
 import transparentLogo from '../assets/transparentlogo.png';
 import { getDashboardRoute, loginUser, registerUser, requestPasswordReset } from '../services/authService';
@@ -11,8 +11,6 @@ export const AuthPage: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
-
-  const defaultRole = useMemo(() => (mode === 'register' ? 'Buyer' : 'Buyer'), [mode]);
 
   const goHome = () => {
     navigateApp(APP_PATHS.home);
@@ -29,8 +27,6 @@ export const AuthPage: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     const email = String(formData.get('email') ?? '').trim();
     const password = String(formData.get('password') ?? '').trim();
     const fullName = String(formData.get('fullName') ?? '').trim();
-    const role = String(formData.get('role') ?? defaultRole);
-
     if (!email || !password) {
       setFormError('Please enter both email and password.');
       return;
@@ -38,8 +34,14 @@ export const AuthPage: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 
     try {
       if (mode === 'register') {
-        const userRecord = await registerUser({ fullName, email, password, role });
-        goDashboard(userRecord.role);
+        const result = await registerUser({ fullName, email, password });
+        if (result.confirmationRequired || !result.user) {
+          setStatusMessage('Registration received. Confirm your email before signing in.');
+          setSubmitted(true);
+          setFormError('');
+          return;
+        }
+        goDashboard(result.user.role);
         setFormError('');
         return;
       }
@@ -90,7 +92,7 @@ export const AuthPage: React.FC<{ mode: AuthMode }> = ({ mode }) => {
             {submitted ? (
               <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6">
                 <ShieldCheck className="mb-4 h-8 w-8 text-emerald-300" />
-                <h2 className="text-2xl font-bold">{mode === 'login' ? 'Session restored' : 'Registration complete'}</h2>
+                <h2 className="text-2xl font-bold">{mode === 'login' ? 'Session restored' : 'Confirm your email'}</h2>
                 <p className="mt-2 text-sm text-neutral-300">{statusMessage || 'The authentication workflow is ready for backend connection.'}</p>
                 <button onClick={goHome} className="mt-6 rounded-xl bg-[#D4AF37] px-5 py-3 text-xs font-bold uppercase tracking-wider text-black">Return Home</button>
               </div>
@@ -98,11 +100,10 @@ export const AuthPage: React.FC<{ mode: AuthMode }> = ({ mode }) => {
               <>
                 <span className="text-[10px] font-mono tracking-widest text-[#D4AF37]">NEXUS IDENTITY GATE</span>
                 <h2 className="mt-2 text-3xl font-extrabold">{mode === 'login' ? 'Welcome back.' : 'Create your Nexus ID.'}</h2>
-                <p className="mt-3 text-sm text-neutral-400">{mode === 'login' ? 'Continue to your role-aware workspace.' : 'Choose your role and begin verified onboarding.'}</p>
+                <p className="mt-3 text-sm text-neutral-400">{mode === 'login' ? 'Continue to your role-aware workspace.' : 'Create your account and begin verified onboarding.'}</p>
                 <form onSubmit={handleSubmit} className="mt-8 space-y-4">
                   {mode === 'register' && <label className="block text-xs font-mono text-neutral-400">FULL NAME<input name="fullName" required className="mt-1 w-full rounded-xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white outline-none focus:border-[#D4AF37]" placeholder="Your full name" /></label>}
                   <label className="block text-xs font-mono text-neutral-400">EMAIL<input name="email" required type="email" className="mt-1 w-full rounded-xl border border-white/10 bg-[#111111] px-10 py-3 text-sm text-white outline-none focus:border-[#D4AF37]" placeholder="you@example.com" /></label>
-                  {mode === 'register' && <label className="block text-xs font-mono text-neutral-400">ROLE<select name="role" defaultValue={defaultRole} className="mt-1 w-full rounded-xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white outline-none focus:border-[#D4AF37]"><option>Buyer</option><option>Seller</option><option>Agent</option><option>Agency</option><option>Developer</option><option>Investor</option><option>Industrial</option><option>Corporate</option><option>Government</option></select></label>}
                   <label className="block text-xs font-mono text-neutral-400">PASSWORD<div className="relative"><Lock className="absolute left-3 top-3.5 h-4 w-4 text-neutral-500" /><input name="password" required type="password" className="mt-1 w-full rounded-xl border border-white/10 bg-[#111111] px-10 py-3 text-sm text-white outline-none focus:border-[#D4AF37]" placeholder="Secure password" /></div></label>
                   {formError && <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-200">{formError}</div>}
                   {statusMessage && <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-200">{statusMessage}</div>}

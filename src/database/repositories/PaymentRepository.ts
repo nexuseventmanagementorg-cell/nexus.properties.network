@@ -1,6 +1,7 @@
 import { BaseRepository } from './BaseRepository';
 import type { Payment } from '../schemas/models';
 import { isSupabaseConfigured, supabaseClient } from '../../services/supabaseClient';
+import { assertUuid } from '../../services/uuid';
 
 export class PaymentRepository extends BaseRepository<Payment> {
   constructor() { super('nexus_db_payments'); }
@@ -15,6 +16,7 @@ export class PaymentRepository extends BaseRepository<Payment> {
   }
   async findByOwner(ownerId: string): Promise<Payment[]> {
     if (isSupabaseConfigured) {
+      assertUuid(ownerId, 'ownerId');
       const { data, error } = await supabaseClient.from('payments').select('*').eq('owner_id', ownerId);
       if (error) throw error;
       return (data || []) as Payment[];

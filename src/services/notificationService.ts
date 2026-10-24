@@ -1,11 +1,12 @@
 import type { NotificationRecord } from './models';
 import { readStore, writeStore } from './storageAdapter';
+import { createUuid } from './uuid';
 
 const NOTIFICATIONS_KEY = 'nexus_notifications';
 
 export const getNotifications = (userId?: string) => readStore<NotificationRecord[]>(NOTIFICATIONS_KEY, []).filter((item) => !userId || item.userId === userId);
 export const createNotification = (input: Omit<NotificationRecord, 'id' | 'createdAt' | 'read' | 'status'>) => {
-  const notification: NotificationRecord = { ...input, id: `NOT-${Date.now()}`, read: false, status: 'unread', createdAt: new Date().toISOString() };
+  const notification: NotificationRecord = { ...input, id: createUuid(), read: false, status: 'unread', createdAt: new Date().toISOString() };
   writeStore(NOTIFICATIONS_KEY, [...readStore<NotificationRecord[]>(NOTIFICATIONS_KEY, []), notification]);
   return notification;
 };
